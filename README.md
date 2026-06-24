@@ -4,7 +4,7 @@
 
 **Standard pane and window management bindings for tmux, version aware, vim friendly, and fully configurable.**
 
-[![Tests](https://github.com/gufranco/tmux-pain-control-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-pain-control-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](CHANGELOG.md)
+[![Tests](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](CHANGELOG.md)
 
 </div>
 
@@ -12,7 +12,7 @@
 
 Pane navigation, resizing, splits that keep the current directory, and window movement, the conventions almost everyone hand-rolls, as a perfected superset of [tmux-pain-control](https://github.com/tmux-plugins/tmux-pain-control). Every binding is gated to the tmux versions that support it, so the same plugin runs cleanly on every tmux TPM supports, from 1.9 up. Any key can be turned off to avoid a conflict, and an optional smart `Ctrl+h/j/k/l` coexists with [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
 
-Built from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-template).
 
 <table>
 <tr>
@@ -47,7 +47,7 @@ All keys are pressed after the prefix.
 With [TPM](https://github.com/tmux-plugins/tpm), add to `~/.tmux.conf`:
 
 ```tmux
-set -g @plugin 'gufranco/tmux-pain-control-revamped'
+set -g @plugin 'tmux-revamped/tmux-pain-control-revamped'
 ```
 
 Then press `prefix + I` to install.
@@ -55,7 +55,7 @@ Then press `prefix + I` to install.
 Manual install:
 
 ```bash
-git clone https://github.com/gufranco/tmux-pain-control-revamped ~/.tmux/plugins/tmux-pain-control-revamped
+git clone https://github.com/tmux-revamped/tmux-pain-control-revamped ~/.tmux/plugins/tmux-pain-control-revamped
 run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 ```
 
