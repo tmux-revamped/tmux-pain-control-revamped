@@ -37,8 +37,9 @@ version_ge() {
 # key_disabled KEY LIST -> 0 when KEY appears in the space or comma separated LIST.
 key_disabled() {
   local key="${1}" item
-  local IFS=', '
-  for item in ${2}; do
+  local -a items=()
+  IFS=', ' read -r -a items <<<"${2}"
+  for item in ${items[@]+"${items[@]}"}; do
     [[ "${item}" == "${key}" ]] && return 0
   done
   return 1

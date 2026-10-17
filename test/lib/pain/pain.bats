@@ -46,6 +46,18 @@ teardown() {
   ! key_disabled "c" ""
 }
 
+@test "pain.sh - key_disabled matches a glob character literally" {
+  # Arrange
+  cd "${TEST_TMPDIR}"
+  touch "${TEST_TMPDIR}/some-file"
+
+  # Act
+  run key_disabled "*" "* <"
+
+  # Assert
+  [ "${status}" -eq 0 ]
+}
+
 @test "pain.sh - tmux_version uses the seam" {
   _tmux_version_string() { echo "tmux 2.6a"; }
   [[ "$(tmux_version)" == "2.6" ]]

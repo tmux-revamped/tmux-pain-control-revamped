@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Smart vim navigation detects vim again: the default `is_vim` pattern
   carried doubled backslashes that reached `grep` literally, so no pane ever
   matched and `Ctrl+h/j/k/l` always moved the tmux pane.
+- `@pane_control_disabled_keys` no longer expands glob characters, so listing
+  `*` disables the smart-split key instead of matching file names.
 
 ## [1.1.0] - 2026-06-30
 
