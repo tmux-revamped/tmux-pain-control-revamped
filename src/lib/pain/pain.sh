@@ -17,7 +17,21 @@ parse_tmux_version() {
 # version_ge HAVE WANT -> 0 when HAVE is greater than or equal to WANT.
 version_ge() {
   [[ -n "${1}" && -n "${2}" ]] || return 1
-  [ "$(printf '%s\n%s\n' "${2}" "${1}" | sort -V | head -n1)" = "${2}" ]
+  local have_major="${1%%.*}" want_major="${2%%.*}" have_minor want_minor
+  have_minor="${1#"${have_major}"}"
+  have_minor="${have_minor#.}"
+  have_minor="${have_minor%%.*}"
+  want_minor="${2#"${want_major}"}"
+  want_minor="${want_minor#.}"
+  want_minor="${want_minor%%.*}"
+  have_minor="${have_minor:-0}"
+  want_minor="${want_minor:-0}"
+  [[ -n "${have_major}" && -n "${want_major}" ]] || return 1
+  case "${have_major}${want_major}${have_minor}${want_minor}" in
+    *[!0-9]*) return 1 ;;
+  esac
+  ((10#${have_major} > 10#${want_major})) && return 0
+  ((10#${have_major} == 10#${want_major} && 10#${have_minor} >= 10#${want_minor}))
 }
 
 # key_disabled KEY LIST -> 0 when KEY appears in the space or comma separated LIST.

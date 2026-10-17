@@ -26,6 +26,17 @@ teardown() {
   ! version_ge "" 2.3
 }
 
+@test "pain.sh - version_ge compares numerically without sort" {
+  # Arrange
+  sort() { return 1; }
+
+  # Act
+  run version_ge 3.10 3.9
+
+  # Assert
+  [ "${status}" -eq 0 ]
+}
+
 @test "pain.sh - key_disabled matches space or comma lists" {
   key_disabled "c" "c < >"
   key_disabled "<" "c,<,>"
