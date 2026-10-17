@@ -1,147 +1,202 @@
 <div align="center">
 
-<h1>tmux-pain-control-revamped</h1>
+# tmux-pain-control-revamped
 
-**Standard pane and window management bindings for tmux, version aware, vim friendly, and fully configurable.**
+<strong>Standard pane and window management bindings for tmux, version aware, vim friendly, and fully configurable.</strong>
 
-[![Tests](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](CHANGELOG.md)
+English &nbsp;|&nbsp; [日本語](README.ja.md) &nbsp;|&nbsp; [简体中文](README.zh-Hans.md) &nbsp;|&nbsp; [繁體中文（香港）](README.zh-HK.md)
+
+[![Tests](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](CHANGELOG.md)
+
+<p align="center">
+  <a href="#what-it-does">What it does</a> &nbsp;|&nbsp;
+  <a href="#installation">Installation</a> &nbsp;|&nbsp;
+  <a href="#usage">Usage</a> &nbsp;|&nbsp;
+  <a href="#configuration">Configuration</a> &nbsp;|&nbsp;
+  <a href="#key-bindings">Key bindings</a> &nbsp;|&nbsp;
+  <a href="#how-it-works">How it works</a>
+</p>
 
 </div>
 
-**35+** bindings · **tmux 1.9 to 3.5** · **vim aware** · **95%+** coverage
+**27** prefix keys bound by default, **12** more opt-in, **28** options, tmux **3.2** or later.
 
-Pane navigation, resizing, splits that keep the current directory, and window movement, the conventions almost everyone hand-rolls, as a perfected superset of [tmux-pain-control](https://github.com/tmux-plugins/tmux-pain-control). Every binding is gated to the tmux versions that support it, so the same plugin runs cleanly on every tmux TPM supports, from 1.9 up. Any key can be turned off to avoid a conflict, and an optional smart `Ctrl+h/j/k/l` coexists with [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
+---
 
-Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-template).
+## What it does
 
-<table>
-<tr>
-<td><strong>Keeps your directory</strong><br>Every split and new window opens in the current pane's path, including the default `"` and `%` keys.</td>
-<td><strong>Version-aware</strong><br>Full splits, the copy-mode table, and binding notes are applied only on the tmux versions that support them.</td>
-</tr>
-<tr>
-<td><strong>Conflict-free</strong><br>Any key can be disabled through one option, so it never fights another plugin or your own bindings.</td>
-<td><strong>Vim friendly</strong><br>Prefixed nav coexists with vim-tmux-navigator, and an optional smart `Ctrl+h/j/k/l` adds split-aware navigation.</td>
-</tr>
-</table>
+The plugin binds pane navigation, resizing, splits that keep the current directory, and pane and window movement. It is a rewrite of [tmux-pain-control](https://github.com/tmux-plugins/tmux-pain-control) with more actions, and it replaces some of tmux's own keys on purpose.
 
-## Bindings
+| Capability | Option |
+|:-----------|:-------|
+| Splits and new windows open in the current pane's directory, `"` and `%` included | `@new_window_path` for `c` |
+| Resize by a set number of cells | `@pane_resize` |
+| Split along the longer side of the pane | `@pane_control_smart_split_key` |
+| Join, break out, swap, promote and mark panes | `@pane_control_join_key` and the other pane keys |
+| Prefixless `Ctrl+h/j/k/l` that moves between vim splits and tmux panes | `@pane_control_vim_navigation` |
+| Stop pane selection at the window edge | `@pane_control_no_wrap` |
+| Turn any listed key off | `@pane_control_disabled_keys` |
 
-All keys are pressed after the prefix. By default the plugin binds only splits, resizing and pane movement, the keys it exists to replace. Every other action ships unbound and is turned on by setting its key option, listed in the second table, so installing the whole tmux-revamped family produces no key conflict.
+## Requirements
 
-| Key | Action | Repeatable | Min tmux |
-|-----|--------|------------|----------|
-| `h` `j` `k` `l` (and `C-h` `C-j` `C-k` `C-l`) | select pane left, down, up, right | no | 1.9 |
-| `H` `J` `K` `L` | resize pane, by `@pane_resize` cells | yes | 1.9 |
-| `\|` | split right, keep path | no | 1.9 |
-| `-` | split down, keep path | no | 1.9 |
-| `\` | split full width, keep path | no | 2.3, normal split below |
-| `_` | split full height, keep path | no | 2.3, normal split below |
-| `"` and `%` | the default splits, now keeping path | no | 1.9 |
-| `c` | new window, keep path | no | 1.9 |
-| `*` | smart split along the longer axis, keep path | no | 1.9 |
-| `@` | join a pane in from another window (prompt) | no | 1.9 |
-| `!` | break the current pane out to its own window | no | 1.9 |
-| `{` `}` | swap the current pane with the previous or next | yes | 1.9 |
-| `+` | promote the current pane to the main slot | no | 3.0, pane index 0 below |
-| `m` `=` | mark a pane, then swap the current pane with the marked one | no | 2.1 |
+| Requirement | Version |
+|:------------|:--------|
+| tmux | 3.2 or later |
+| bash | 3.2 or later |
 
-Opt-in actions, unbound until the option is set. The example value is the key each one had before 2.0.0.
+It runs on Linux and macOS with BSD, GNU or uutils coreutils. Smart vim navigation uses `ps` and `grep` to detect vim in the pane.
 
-| Option | Example | Action | Repeatable | Min tmux |
-|--------|---------|--------|------------|----------|
-| `@pane_control_swap_window_left_key` | `<` | move the current window left | yes | 1.9 |
-| `@pane_control_swap_window_right_key` | `>` | move the current window right | yes | 1.9 |
-| `@pane_control_sync_key` | `S` | toggle synchronized input across panes | no | 1.9 |
-| `@pane_control_layout_even_h_key` | `E` | even-horizontal layout | no | 1.9 |
-| `@pane_control_layout_even_v_key` | `V` | even-vertical layout | no | 1.9 |
-| `@pane_control_layout_main_v_key` | `B` | main-vertical layout | no | 1.9 |
-| `@pane_control_move_window_key` | `.` | move the current window to another session (prompt) | no | 1.9 |
-| `@pane_control_kill_window_key` | `&` | kill the current window, after a confirm | no | 1.9 |
-| `@pane_control_respawn_key` | `R` | respawn the current pane, after a confirm | no | 1.9 |
-| `@pane_control_pane_name_key` | `P` | name the current pane (prompt) | no | 2.6 |
-| `@pane_control_capture_key` | `C` | capture the whole scrollback to a file (prompt) | no | 1.9 |
-| `@pane_control_scratch_key` | `g` | open an ephemeral scratch shell over the session | no | 3.2 |
+## Installation
 
-```tmux
-set -g @pane_control_sync_key 'S'
-set -g @pane_control_swap_window_left_key '<'
-set -g @pane_control_swap_window_right_key '>'
-```
-
-## Install
-
-With [TPM](https://github.com/tmux-plugins/tpm), add to `~/.tmux.conf`:
+With [TPM](https://github.com/tmux-plugins/tpm), add the plugin to `~/.tmux.conf` and press `prefix + I`:
 
 ```tmux
 set -g @plugin 'tmux-revamped/tmux-pain-control-revamped'
 ```
 
-Then press `prefix + I` to install.
-
-Manual install:
+To install by hand, clone the repository and run the entrypoint from `~/.tmux.conf`:
 
 ```bash
 git clone https://github.com/tmux-revamped/tmux-pain-control-revamped ~/.tmux/plugins/tmux-pain-control-revamped
+```
+
+```tmux
 run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 ```
+
+## Usage
+
+After installation, the keys in [Key bindings](#key-bindings) work after the prefix. `prefix + |` splits right and `prefix + -` splits down, both in the current directory. `prefix + h/j/k/l` moves between panes and `prefix + H/J/K/L` resizes them.
+
+Turn on the opt-in actions you want, and switch off keys you need elsewhere:
+
+```tmux
+set -g @pane_control_sync_key 'S'
+set -g @pane_control_swap_window_left_key '<'
+set -g @pane_control_swap_window_right_key '>'
+set -g @pane_control_scratch_key 'g'
+set -g @pane_control_scratch_command 'htop'
+
+set -g @pane_control_disabled_keys 'c, *'
+set -g @pane_resize 10
+```
+
+To replace the tmux half of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator):
+
+```tmux
+set -g @pane_control_vim_navigation 'on'
+```
+
+`Ctrl+h/j/k/l` then moves the vim split when vim has focus and the tmux pane otherwise, and `Ctrl+\` goes to the previous pane. Because this takes `Ctrl+l` without a prefix, `prefix + C-l` sends a clear-screen instead. The vim side still needs the vim-tmux-navigator plugin in your editor.
 
 ## Configuration
 
 | Option | Default | Meaning |
-|--------|---------|---------|
-| `@pane_resize` | `5` | cells each resize binding moves |
-| `@new_window_path` | `true` | new window opens in the current path; set `false` for the default behavior |
-| `@pane_control_sync_key` | empty | key that toggles `synchronize-panes`; empty leaves it unbound |
-| `@pane_control_swap_window_left_key` | empty | key that moves the window left; empty leaves it unbound |
-| `@pane_control_swap_window_right_key` | empty | key that moves the window right; empty leaves it unbound |
-| `@pane_control_disabled_keys` | empty | space or comma separated keys to leave unbound, for example `"c <"` |
-| `@pane_control_vim_navigation` | `off` | set `on` for prefixless `Ctrl+h/j/k/l` and `Ctrl+\` pane and vim-split navigation |
-| `@pane_control_vim_pattern` | the vim-family regex | the process pattern that marks a pane as running vim; override for a wrapped or renamed editor |
-| `@pane_control_no_wrap` | `off` | set `on` so pane selection stops at the edge instead of wrapping to the far side (tmux 2.6+) |
-| `@pane_control_pane_titles` | `off` | set `on` to show pane titles in the pane border (tmux 2.3+) |
-| `@pane_control_smart_split_key` | `*` | key for the longer-axis smart split |
-| `@pane_control_join_key` | `@` | key that prompts to join a pane in |
-| `@pane_control_break_key` | `!` | key that breaks the current pane to its own window |
-| `@pane_control_swap_prev_key` | `{` | key that swaps the pane with the previous |
-| `@pane_control_swap_next_key` | `}` | key that swaps the pane with the next |
-| `@pane_control_promote_key` | `+` | key that promotes the pane to the main slot |
-| `@pane_control_mark_key` | `m` | key that marks a pane (tmux 2.1+) |
-| `@pane_control_swap_mark_key` | `=` | key that swaps the current pane with the marked one (tmux 2.1+) |
-| `@pane_control_layout_even_h_key` | empty | key for the even-horizontal layout; empty leaves it unbound |
-| `@pane_control_layout_even_v_key` | empty | key for the even-vertical layout; empty leaves it unbound |
-| `@pane_control_layout_main_v_key` | empty | key for the main-vertical layout; empty leaves it unbound |
-| `@pane_control_move_window_key` | empty | key that prompts to move the window to another session; empty leaves it unbound |
-| `@pane_control_kill_window_key` | empty | key that kills the window after a confirm; empty leaves it unbound |
-| `@pane_control_respawn_key` | empty | key that respawns the pane after a confirm; empty leaves it unbound |
-| `@pane_control_pane_name_key` | empty | key that prompts for a pane title (tmux 2.6+); empty leaves it unbound |
-| `@pane_control_capture_key` | empty | key that prompts to save the scrollback to a file; empty leaves it unbound |
-| `@pane_control_scratch_key` | empty | key that opens the scratch popup (tmux 3.2+); empty leaves it unbound |
-| `@pane_control_scratch_command` | empty | command the scratch popup runs; empty opens your default shell |
+|:-------|:--------|:--------|
+| `@pane_resize` | `5` | Cells each resize key moves |
+| `@new_window_path` | `true` | `true`, `on` or `1` binds `c` to open a new window in the current directory; any other value leaves `c` alone |
+| `@pane_control_disabled_keys` | empty | Keys to leave unbound, separated by spaces or commas, such as `c, <` |
+| `@pane_control_no_wrap` | `off` | `on` stops `h/j/k/l` selection at the window edge instead of wrapping |
+| `@pane_control_pane_titles` | `off` | `on` shows the pane index and title in the top pane border |
+| `@pane_control_vim_navigation` | `off` | `on` binds prefixless `Ctrl+h/j/k/l` and `Ctrl+\` with vim detection |
+| `@pane_control_vim_pattern` | the vim-tmux-navigator pattern | Process name regex that marks a pane as running vim |
+| `@pane_control_scratch_command` | empty | Command the scratch popup runs; empty opens your shell |
+| `@pane_control_smart_split_key` | `*` | Smart split |
+| `@pane_control_join_key` | `@` | Join a pane from another window, after a prompt |
+| `@pane_control_break_key` | `!` | Break the current pane into its own window |
+| `@pane_control_swap_prev_key` | `{` | Swap the pane with the previous one |
+| `@pane_control_swap_next_key` | `}` | Swap the pane with the next one |
+| `@pane_control_promote_key` | `+` | Swap the pane into the top-left slot |
+| `@pane_control_mark_key` | `m` | Mark the pane |
+| `@pane_control_swap_mark_key` | `=` | Swap the pane with the marked pane |
+| `@pane_control_sync_key` | empty | Toggle `synchronize-panes` and show its state |
+| `@pane_control_swap_window_left_key` | empty | Move the window one place left |
+| `@pane_control_swap_window_right_key` | empty | Move the window one place right |
+| `@pane_control_move_window_key` | empty | Move the window to another session, after a prompt |
+| `@pane_control_kill_window_key` | empty | Kill the window, after a confirmation |
+| `@pane_control_layout_even_h_key` | empty | `even-horizontal` layout |
+| `@pane_control_layout_even_v_key` | empty | `even-vertical` layout |
+| `@pane_control_layout_main_v_key` | empty | `main-vertical` layout |
+| `@pane_control_respawn_key` | empty | Respawn the pane, after a confirmation |
+| `@pane_control_capture_key` | empty | Save the whole scrollback to a file, after a prompt that offers `~/tmux-scrollback.log` |
+| `@pane_control_pane_name_key` | empty | Set the pane title, after a prompt |
+| `@pane_control_scratch_key` | empty | Open an 80% popup shell in the current directory |
 
-## Working with vim-tmux-navigator
+A key option set to an empty value binds nothing. The plugin keeps no internal state options.
 
-The prefixed `h/j/k/l` here and the prefixless `Ctrl+h/j/k/l` of vim-tmux-navigator live in different key tables and never collide, so the two are complementary: keep using both. To stop running vim-tmux-navigator's tmux side, set `@pane_control_vim_navigation 'on'` and this plugin provides the same prefixless `Ctrl+h/j/k/l` plus `Ctrl+\` for the previous pane, with the same `is_vim` process check, so the same chord moves your vim split when vim is focused and the tmux pane otherwise. The `is_vim` pattern is overridable through `@pane_control_vim_pattern`, matching vim-tmux-navigator's `@vim_navigator_pattern`. This needs tmux 2.4 or newer and binds the chords without a prefix, which shadows `Ctrl+l` clear-screen, so it stays off by default.
+## Key bindings
 
-This replaces only the tmux half of vim-tmux-navigator. The Neovim or Vim half, the in-editor keymaps, is a Vim plugin and still belongs in your editor config.
+### Bound by default
 
-## Compatibility
+All of these follow the prefix. The navigation, resize, split and `c` keys cannot be moved, only disabled with `@pane_control_disabled_keys`.
 
-Works on every tmux version TPM supports, 1.9 and up, on Linux (x86_64 and arm64) and macOS (Intel and Apple Silicon). Newer operations are gated to the versions that support them: the marked-pane swap needs 2.1, pane titles need 2.6, edge no-wrap selection needs 2.6, the promote-to-main token needs 3.0, and the scratch popup needs 3.2. Below tmux 2.3 the full-width and full-height splits fall back to normal splits; below 3.1 the binding description notes are omitted; the optional smart navigation needs 2.4 for the copy-mode table. Each gated binding is simply omitted on older tmux; nothing errors.
+| Key | Action | Repeatable |
+|:----|:-------|:----------:|
+| `h` `j` `k` `l`, `C-h` `C-j` `C-k` `C-l` | Select the pane left, below, above or right | No |
+| `H` `J` `K` `L` | Resize the pane by `@pane_resize` cells | Yes |
+| `\|` and `%` | Split right in the current directory | No |
+| `-` and `"` | Split down in the current directory | No |
+| `\` | Split at full window width | No |
+| `_` | Split at full window height | No |
+| `*` | Split along the longer side | No |
+| `c` | New window in the current directory | No |
+| `@` | Join a pane from another window | No |
+| `!` | Break the pane into its own window | No |
+| `{` `}` | Swap with the previous or next pane | Yes |
+| `+` | Promote the pane to the top-left slot | No |
+| `m` | Mark the pane | No |
+| `=` | Swap with the marked pane | No |
+
+`pain-control` is a declared overrider in the tmux-revamped family, so these keys replace stock tmux bindings by design.
+
+### Opt-in
+
+Version 2.0.0 unbound these. Set the option to the old key to restore one:
+
+| Option | Old key | Action |
+|:-------|:-------:|:-------|
+| `@pane_control_sync_key` | `S` | Toggle synchronized panes |
+| `@pane_control_swap_window_left_key` | `<` | Move the window left |
+| `@pane_control_swap_window_right_key` | `>` | Move the window right |
+| `@pane_control_move_window_key` | `.` | Move the window to a session |
+| `@pane_control_kill_window_key` | `&` | Kill the window |
+| `@pane_control_layout_even_h_key` | `E` | `even-horizontal` layout |
+| `@pane_control_layout_even_v_key` | `V` | `even-vertical` layout |
+| `@pane_control_layout_main_v_key` | `B` | `main-vertical` layout |
+| `@pane_control_respawn_key` | `R` | Respawn the pane |
+| `@pane_control_capture_key` | `C` | Capture the scrollback |
+| `@pane_control_pane_name_key` | `P` | Name the pane |
+| `@pane_control_scratch_key` | `g` | Scratch popup |
+
+### Smart vim navigation
+
+With `@pane_control_vim_navigation` set to `on`, the plugin also binds `C-h`, `C-j`, `C-k`, `C-l` and `C-\` in the root table and in `copy-mode-vi`, and rebinds `prefix + C-l` to clear the screen. `@pane_control_disabled_keys` does not apply to these.
+
+## How it works
+
+[`pain-control-revamped.tmux`](pain-control-revamped.tmux) runs [`src/pain.sh`](src/pain.sh) once when tmux loads the plugin. The script reads the options and the tmux version, then issues `bind-key` for each key. Nothing runs in the background afterwards.
+
+Each binding carries a `-N` note, so `prefix + ?` lists it with a description. On tmux older than 3.2 the version checks in the script still drop what that tmux lacks: full splits need 2.3, marks 2.1, pane names and edge no-wrap 2.6, the `{top-left}` promote target 3.0, and the scratch popup 3.2.
+
+With vim navigation on, each chord runs `ps` on the pane's TTY and matches the process name against `@pane_control_vim_pattern`. A match sends the key to vim; otherwise tmux selects the pane.
+
+The version and key helpers live in [`src/lib/pain/pain.sh`](src/lib/pain/pain.sh). Setting `PAIN_DRY_RUN` makes the script print each tmux command instead of running it, which is how the test suite checks the bindings.
 
 ## Development
 
-```bash
-make test    # bats suite
-make lint    # shellcheck
-make coverage  # kcov line coverage on Linux
-```
+| Command | What it does |
+|:--------|:-------------|
+| `make test` | Runs the bats suite |
+| `make lint` | Runs shellcheck on every shell file |
+| `make coverage` | Measures line coverage with kcov on Linux and fails below 95% |
 
-The decision logic lives in [`src/lib/pain/pain.sh`](src/lib/pain/pain.sh) as pure, seam-backed helpers, and the applier in [`src/pain.sh`](src/pain.sh) runs under a dry-run mode so the full binding matrix is validated without a live tmux.
+Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-[MIT](LICENSE), copyright Gustavo Franco.
+[MIT](LICENSE)
 
 <!-- family:begin -->
 
@@ -164,26 +219,26 @@ memory, and `family/bin/sweep` is how it is discharged.
 | [`tmux-bluetooth-revamped`](https://github.com/tmux-revamped/tmux-bluetooth-revamped) | Every connected Bluetooth device and its battery in your tmux status bar, without blocking the render |
 | [`tmux-cpu-revamped`](https://github.com/tmux-revamped/tmux-cpu-revamped) | CPU load, temperature, and frequency in your tmux status bar, without ever blocking the render |
 | [`tmux-disk-revamped`](https://github.com/tmux-revamped/tmux-disk-revamped) | Disk usage for your tmux status bar, without ever blocking the status render |
-| [`tmux-extract-revamped`](https://github.com/tmux-revamped/tmux-extract-revamped) | Fuzzy-grab any URL, path, or word off the screen and paste it, pure shell, no Python |
-| [`tmux-fzf-revamped`](https://github.com/tmux-revamped/tmux-fzf-revamped) | Jump to any session, window, or pane, or kill it, from one fzf popup |
-| [`tmux-git-revamped`](https://github.com/tmux-revamped/tmux-git-revamped) | Git repository status in your tmux status bar, without ever blocking the render |
-| [`tmux-gpu-revamped`](https://github.com/tmux-revamped/tmux-gpu-revamped) | GPU load, temperature, frequency, and memory for your tmux status bar |
-| [`tmux-kube-revamped`](https://github.com/tmux-revamped/tmux-kube-revamped) | Current Kubernetes context and namespace in your tmux status bar, async, kubectl-free, never blocking |
+| [`tmux-extract-revamped`](https://github.com/tmux-revamped/tmux-extract-revamped) | Pick a URL, path, hash or any other token off the screen with fzf and type it at the cursor, in pure shell |
+| [`tmux-fzf-revamped`](https://github.com/tmux-revamped/tmux-fzf-revamped) | Switch to, kill, rename or create tmux sessions, windows and panes from fzf pickers in a popup |
+| [`tmux-git-revamped`](https://github.com/tmux-revamped/tmux-git-revamped) | Show the active pane's git branch, changes and provider counts in the tmux status bar without blocking it |
+| [`tmux-gpu-revamped`](https://github.com/tmux-revamped/tmux-gpu-revamped) | GPU load, temperature, clock, power and memory in the tmux status bar, from NVIDIA, AMD, Intel and Apple GPUs |
+| [`tmux-kube-revamped`](https://github.com/tmux-revamped/tmux-kube-revamped) | Current Kubernetes context and namespace in the tmux status bar, parsed from kubeconfig without kubectl |
 | [`tmux-launcher-revamped`](https://github.com/tmux-revamped/tmux-launcher-revamped) | Launch any TUI app in a popup or a window, scoped to the current pane's directory, with one configurable bindi |
 | [`tmux-logging-revamped`](https://github.com/tmux-revamped/tmux-logging-revamped) | Capture any pane to a file: live logging, full scrollback, or a one-shot screenshot |
 | [`tmux-music-revamped`](https://github.com/tmux-revamped/tmux-music-revamped) | Now playing in your tmux status bar, without ever blocking the status render |
 | [`tmux-network-revamped`](https://github.com/tmux-revamped/tmux-network-revamped) | Network throughput in your tmux status bar, without ever blocking the render |
 | [`tmux-pain-control-revamped`](https://github.com/tmux-revamped/tmux-pain-control-revamped) | **this plugin**, Standard pane and window management bindings for tmux, version aware, vim friendly, and fully configurable |
-| [`tmux-persist-revamped`](https://github.com/tmux-revamped/tmux-persist-revamped) | Save, auto-save, and restore your whole tmux environment, one plugin, no status-line tricks |
+| [`tmux-persist-revamped`](https://github.com/tmux-revamped/tmux-persist-revamped) | Save every tmux session, window and pane, auto-save on a timer, and restore it all after a reboot |
 | [`tmux-plugin-template`](https://github.com/tmux-revamped/tmux-plugin-template) | A template for building non-blocking tmux status plugins |
-| [`tmux-pomodoro-revamped`](https://github.com/tmux-revamped/tmux-pomodoro-revamped) | A Pomodoro timer in your tmux status bar, with zero temp files: all state lives in tmux options |
-| [`tmux-ram-revamped`](https://github.com/tmux-revamped/tmux-ram-revamped) | RAM usage for your tmux status bar, without ever blocking the status render |
-| [`tmux-reorder-revamped`](https://github.com/tmux-revamped/tmux-reorder-revamped) | Drag a window tab on the status bar with the mouse to move that window |
-| [`tmux-scroll-revamped`](https://github.com/tmux-revamped/tmux-scroll-revamped) | Mouse wheel that does the right thing: scroll the app directly, copy-mode everywhere else. No app names to con |
-| [`tmux-sensible-revamped`](https://github.com/tmux-revamped/tmux-sensible-revamped) | Sensible tmux defaults that normalize behavior across every tmux version, OS, and terminal, without clobbering |
-| [`tmux-tiling-revamped`](https://github.com/tmux-revamped/tmux-tiling-revamped) | BSP tiling window management for tmux. Eight layouts, nineteen operations, zero dependencies |
-| [`tmux-time-revamped`](https://github.com/tmux-revamped/tmux-time-revamped) | Local clock and world clocks in your tmux status bar, without ever blocking the render |
-| [`tmux-weather-revamped`](https://github.com/tmux-revamped/tmux-weather-revamped) | Weather in your tmux status bar, fetched in the background so the render never waits on the network |
+| [`tmux-pomodoro-revamped`](https://github.com/tmux-revamped/tmux-pomodoro-revamped) | A Pomodoro timer in the tmux status bar that keeps all of its state in tmux options, with no temp files |
+| [`tmux-ram-revamped`](https://github.com/tmux-revamped/tmux-ram-revamped) | RAM, swap and memory pressure in the tmux status bar, sampled in the background so the render never waits |
+| [`tmux-reorder-revamped`](https://github.com/tmux-revamped/tmux-reorder-revamped) | Drag a window tab along the tmux status bar with the mouse to move that window |
+| [`tmux-scroll-revamped`](https://github.com/tmux-revamped/tmux-scroll-revamped) | Send the mouse wheel to apps that scroll themselves and into tmux copy-mode everywhere else |
+| [`tmux-sensible-revamped`](https://github.com/tmux-revamped/tmux-sensible-revamped) | Sensible tmux defaults, gated by tmux version and terminal, that leave the options you set alone |
+| [`tmux-tiling-revamped`](https://github.com/tmux-revamped/tmux-tiling-revamped) | Tiling window management for tmux: eight layouts including BSP dwindle and spiral, with layout undo |
+| [`tmux-time-revamped`](https://github.com/tmux-revamped/tmux-time-revamped) | Local and world clocks for the tmux status bar, colored by time of day, with countdowns and a DST warning |
+| [`tmux-weather-revamped`](https://github.com/tmux-revamped/tmux-weather-revamped) | Weather for the tmux status bar from wttr.in, fetched in the background so the status line never waits |
 
 ### Checking an installation
 
