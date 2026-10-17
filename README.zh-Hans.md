@@ -2,7 +2,7 @@
 
 # tmux-pain-control-revamped
 
-<strong>tmux 的标准窗格和窗口管理按键，适配 tmux 版本，兼容 vim，全部可配置。</strong>
+<strong>tmux 的窗格和窗口管理按键，适配 tmux 版本，兼容 vim，每个 prefix 按键都可禁用。</strong>
 
 [English](README.md) &nbsp;|&nbsp; [日本語](README.ja.md) &nbsp;|&nbsp; 简体中文 &nbsp;|&nbsp; [繁體中文（香港）](README.zh-HK.md)
 

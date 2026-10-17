@@ -2,7 +2,7 @@
 
 # tmux-pain-control-revamped
 
-<strong>Standard pane and window management bindings for tmux, version aware, vim friendly, and fully configurable.</strong>
+<strong>Pane and window management bindings for tmux, version aware, vim friendly, every prefix key can be disabled.</strong>
 
 English &nbsp;|&nbsp; [日本語](README.ja.md) &nbsp;|&nbsp; [简体中文](README.zh-Hans.md) &nbsp;|&nbsp; [繁體中文（香港）](README.zh-HK.md)
 
