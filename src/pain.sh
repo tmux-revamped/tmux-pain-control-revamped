@@ -66,7 +66,7 @@ _apply_vim_nav() {
   local is_vim pattern
   # The process pattern that marks a pane as running vim. Overridable so a
   # wrapped or renamed editor still hands off, matching vim-tmux-navigator.
-  pattern="$(get_opt @pane_control_vim_pattern '(\\S+/)?g?\\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?')"
+  pattern="$(get_opt @pane_control_vim_pattern '(\S+/)?g?\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?')"
   is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +${pattern}\$'"
   _emit bind-key -n C-h if-shell "${is_vim}" "send-keys C-h" "select-pane -L"
   _emit bind-key -n C-j if-shell "${is_vim}" "send-keys C-j" "select-pane -D"

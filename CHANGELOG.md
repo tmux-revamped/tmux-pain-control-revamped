@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   relying on `sort -V`, which some `sort` implementations lack.
 - Negative test assertions that were not the last line of a test now fail
   the test when they do not hold.
+- Smart vim navigation detects vim again: the default `is_vim` pattern
+  carried doubled backslashes that reached `grep` literally, so no pane ever
+  matched and `Ctrl+h/j/k/l` always moved the tmux pane.
 
 ## [1.1.0] - 2026-06-30
 

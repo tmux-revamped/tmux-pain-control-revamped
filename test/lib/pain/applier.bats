@@ -302,3 +302,24 @@ teardown() {
   [[ "${output}" == *"G display-popup -E"* ]]
   [[ "${output}" == *"X confirm-before -p respawn-pane?"* ]]
 }
+
+@test "applier - the default vim pattern detects nvim in the pane" {
+  # Arrange
+  _emit() {
+    if [[ "${1} ${2} ${3}" == "bind-key -n C-h" ]]; then
+      printf '%s' "${5}" >"${TEST_TMPDIR}/is_vim"
+    fi
+    return 0
+  }
+  mkdir -p "${TEST_TMPDIR}/bin"
+  printf '#!/bin/sh\nprintf "S nvim\\n"\n' >"${TEST_TMPDIR}/bin/ps"
+  chmod +x "${TEST_TMPDIR}/bin/ps"
+  _apply_vim_nav
+  is_vim="$(cat "${TEST_TMPDIR}/is_vim")"
+
+  # Act
+  run env PATH="${TEST_TMPDIR}/bin:${PATH}" sh -c "${is_vim}"
+
+  # Assert
+  [ "${status}" -eq 0 ]
+}
