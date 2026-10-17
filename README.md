@@ -4,7 +4,7 @@
 
 **Standard pane and window management bindings for tmux, version aware, vim friendly, and fully configurable.**
 
-[![Tests](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](CHANGELOG.md)
+[![Tests](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](CHANGELOG.md)
 
 </div>
 
@@ -27,7 +27,7 @@ Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-t
 
 ## Bindings
 
-All keys are pressed after the prefix.
+All keys are pressed after the prefix. By default the plugin binds only splits, resizing and pane movement, the keys it exists to replace. Every other action ships unbound and is turned on by setting its key option, listed in the second table, so installing the whole tmux-revamped family produces no key conflict.
 
 | Key | Action | Repeatable | Min tmux |
 |-----|--------|------------|----------|
@@ -39,21 +39,35 @@ All keys are pressed after the prefix.
 | `_` | split full height, keep path | no | 2.3, normal split below |
 | `"` and `%` | the default splits, now keeping path | no | 1.9 |
 | `c` | new window, keep path | no | 1.9 |
-| `<` `>` | move the current window left or right | yes | 1.9 |
-| `S` | toggle synchronized input across panes | no | 1.9 |
 | `*` | smart split along the longer axis, keep path | no | 1.9 |
 | `@` | join a pane in from another window (prompt) | no | 1.9 |
 | `!` | break the current pane out to its own window | no | 1.9 |
 | `{` `}` | swap the current pane with the previous or next | yes | 1.9 |
 | `+` | promote the current pane to the main slot | no | 3.0, pane index 0 below |
 | `m` `=` | mark a pane, then swap the current pane with the marked one | no | 2.1 |
-| `E` `V` `B` | even-horizontal, even-vertical, main-vertical layout | no | 1.9 |
-| `.` | move the current window to another session (prompt) | no | 1.9 |
-| `&` | kill the current window, after a confirm | no | 1.9 |
-| `R` | respawn the current pane, after a confirm | no | 1.9 |
-| `P` | name the current pane (prompt) | no | 2.6 |
-| `C` | capture the whole scrollback to a file (prompt) | no | 1.9 |
-| `g` | open an ephemeral scratch shell over the session | no | 3.2 |
+
+Opt-in actions, unbound until the option is set. The example value is the key each one had before 2.0.0.
+
+| Option | Example | Action | Repeatable | Min tmux |
+|--------|---------|--------|------------|----------|
+| `@pane_control_swap_window_left_key` | `<` | move the current window left | yes | 1.9 |
+| `@pane_control_swap_window_right_key` | `>` | move the current window right | yes | 1.9 |
+| `@pane_control_sync_key` | `S` | toggle synchronized input across panes | no | 1.9 |
+| `@pane_control_layout_even_h_key` | `E` | even-horizontal layout | no | 1.9 |
+| `@pane_control_layout_even_v_key` | `V` | even-vertical layout | no | 1.9 |
+| `@pane_control_layout_main_v_key` | `B` | main-vertical layout | no | 1.9 |
+| `@pane_control_move_window_key` | `.` | move the current window to another session (prompt) | no | 1.9 |
+| `@pane_control_kill_window_key` | `&` | kill the current window, after a confirm | no | 1.9 |
+| `@pane_control_respawn_key` | `R` | respawn the current pane, after a confirm | no | 1.9 |
+| `@pane_control_pane_name_key` | `P` | name the current pane (prompt) | no | 2.6 |
+| `@pane_control_capture_key` | `C` | capture the whole scrollback to a file (prompt) | no | 1.9 |
+| `@pane_control_scratch_key` | `g` | open an ephemeral scratch shell over the session | no | 3.2 |
+
+```tmux
+set -g @pane_control_sync_key 'S'
+set -g @pane_control_swap_window_left_key '<'
+set -g @pane_control_swap_window_right_key '>'
+```
 
 ## Install
 
@@ -78,7 +92,9 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 |--------|---------|---------|
 | `@pane_resize` | `5` | cells each resize binding moves |
 | `@new_window_path` | `true` | new window opens in the current path; set `false` for the default behavior |
-| `@pane_control_sync_key` | `S` | key that toggles `synchronize-panes` |
+| `@pane_control_sync_key` | empty | key that toggles `synchronize-panes`; empty leaves it unbound |
+| `@pane_control_swap_window_left_key` | empty | key that moves the window left; empty leaves it unbound |
+| `@pane_control_swap_window_right_key` | empty | key that moves the window right; empty leaves it unbound |
 | `@pane_control_disabled_keys` | empty | space or comma separated keys to leave unbound, for example `"c <"` |
 | `@pane_control_vim_navigation` | `off` | set `on` for prefixless `Ctrl+h/j/k/l` and `Ctrl+\` pane and vim-split navigation |
 | `@pane_control_vim_pattern` | the vim-family regex | the process pattern that marks a pane as running vim; override for a wrapped or renamed editor |
@@ -92,15 +108,15 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pane_control_promote_key` | `+` | key that promotes the pane to the main slot |
 | `@pane_control_mark_key` | `m` | key that marks a pane (tmux 2.1+) |
 | `@pane_control_swap_mark_key` | `=` | key that swaps the current pane with the marked one (tmux 2.1+) |
-| `@pane_control_layout_even_h_key` | `E` | key for the even-horizontal layout |
-| `@pane_control_layout_even_v_key` | `V` | key for the even-vertical layout |
-| `@pane_control_layout_main_v_key` | `B` | key for the main-vertical layout |
-| `@pane_control_move_window_key` | `.` | key that prompts to move the window to another session |
-| `@pane_control_kill_window_key` | `&` | key that kills the window after a confirm |
-| `@pane_control_respawn_key` | `R` | key that respawns the pane after a confirm |
-| `@pane_control_pane_name_key` | `P` | key that prompts for a pane title (tmux 2.6+) |
-| `@pane_control_capture_key` | `C` | key that prompts to save the scrollback to a file |
-| `@pane_control_scratch_key` | `g` | key that opens the scratch popup (tmux 3.2+) |
+| `@pane_control_layout_even_h_key` | empty | key for the even-horizontal layout; empty leaves it unbound |
+| `@pane_control_layout_even_v_key` | empty | key for the even-vertical layout; empty leaves it unbound |
+| `@pane_control_layout_main_v_key` | empty | key for the main-vertical layout; empty leaves it unbound |
+| `@pane_control_move_window_key` | empty | key that prompts to move the window to another session; empty leaves it unbound |
+| `@pane_control_kill_window_key` | empty | key that kills the window after a confirm; empty leaves it unbound |
+| `@pane_control_respawn_key` | empty | key that respawns the pane after a confirm; empty leaves it unbound |
+| `@pane_control_pane_name_key` | empty | key that prompts for a pane title (tmux 2.6+); empty leaves it unbound |
+| `@pane_control_capture_key` | empty | key that prompts to save the scrollback to a file; empty leaves it unbound |
+| `@pane_control_scratch_key` | empty | key that opens the scratch popup (tmux 3.2+); empty leaves it unbound |
 | `@pane_control_scratch_command` | empty | command the scratch popup runs; empty opens your default shell |
 
 ## Working with vim-tmux-navigator

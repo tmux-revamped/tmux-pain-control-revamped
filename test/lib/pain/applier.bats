@@ -70,12 +70,15 @@ teardown() {
 }
 
 @test "applier - window swap keeps focus with -d" {
+  tmux set-option -gq "@pane_control_swap_window_left_key" "<"
+  tmux set-option -gq "@pane_control_swap_window_right_key" ">"
   run apply_pain
   [[ "${output}" == *"swap-window -d -t -1"* ]]
   [[ "${output}" == *"swap-window -d -t +1"* ]]
 }
 
 @test "applier - synchronize toggle keeps display-message in the binding via an escaped separator" {
+  tmux set-option -gq "@pane_control_sync_key" "S"
   run apply_pain
   [[ "${output}" == *'S set-window-option synchronize-panes \; display-message'* ]]
   [[ "${output}" != *'synchronize-panes ; display-message'* ]]
@@ -94,6 +97,8 @@ teardown() {
 }
 
 @test "applier - disabled keys are skipped" {
+  tmux set-option -gq "@pane_control_swap_window_left_key" "<"
+  tmux set-option -gq "@pane_control_swap_window_right_key" ">"
   tmux set-option -gq "@pane_control_disabled_keys" "c <"
   run apply_pain
   [[ "${output}" != *"new-window"* ]]
@@ -154,11 +159,13 @@ teardown() {
 }
 
 @test "applier - move window to session prompts" {
+  tmux set-option -gq "@pane_control_move_window_key" "."
   run apply_pain
   [[ "${output}" == *". command-prompt -p move window to session: move-window -t '%%'"* ]]
 }
 
 @test "applier - kill window confirms first" {
+  tmux set-option -gq "@pane_control_kill_window_key" "&"
   run apply_pain
   [[ "${output}" == *"& confirm-before -p kill-window #W? (y/n) kill-window"* ]]
 }
@@ -195,6 +202,9 @@ teardown() {
 }
 
 @test "applier - layout preset bindings" {
+  tmux set-option -gq "@pane_control_layout_even_h_key" "E"
+  tmux set-option -gq "@pane_control_layout_even_v_key" "V"
+  tmux set-option -gq "@pane_control_layout_main_v_key" "B"
   run apply_pain
   [[ "${output}" == *"E select-layout even-horizontal"* ]]
   [[ "${output}" == *"V select-layout even-vertical"* ]]
@@ -202,21 +212,25 @@ teardown() {
 }
 
 @test "applier - respawn pane confirms and kills the old process" {
+  tmux set-option -gq "@pane_control_respawn_key" "R"
   run apply_pain
   [[ "${output}" == *"R confirm-before -p respawn-pane? (y/n) respawn-pane -k"* ]]
 }
 
 @test "applier - capture scrollback to a file prompts for the path" {
+  tmux set-option -gq "@pane_control_capture_key" "C"
   run apply_pain
   [[ "${output}" == *"C command-prompt -p save scrollback to: -I ${HOME}/tmux-scrollback.log capture-pane -S - ; save-buffer '%%' ; delete-buffer"* ]]
 }
 
 @test "applier - name pane binding needs tmux 2.6" {
+  tmux set-option -gq "@pane_control_pane_name_key" "P"
   run apply_pain
   [[ "${output}" == *"P command-prompt -p pane title: select-pane -T '%%'"* ]]
 }
 
 @test "applier - name pane binding is skipped below tmux 2.6" {
+  tmux set-option -gq "@pane_control_pane_name_key" "P"
   _tmux_version_string() { echo "tmux 2.5"; }
   run apply_pain
   [[ "${output}" != *"select-pane -T"* ]]
@@ -239,17 +253,20 @@ teardown() {
 }
 
 @test "applier - scratch popup needs tmux 3.2 and opens a default shell" {
+  tmux set-option -gq "@pane_control_scratch_key" "g"
   run apply_pain
   [[ "${output}" == *"g display-popup -E -d #{pane_current_path} -w 80% -h 80%"* ]]
 }
 
 @test "applier - scratch popup runs a configured command" {
+  tmux set-option -gq "@pane_control_scratch_key" "g"
   tmux set-option -gq "@pane_control_scratch_command" "lazygit"
   run apply_pain
   [[ "${output}" == *"display-popup -E -d #{pane_current_path} -w 80% -h 80% lazygit"* ]]
 }
 
 @test "applier - scratch popup is skipped below tmux 3.2" {
+  tmux set-option -gq "@pane_control_scratch_key" "g"
   _tmux_version_string() { echo "tmux 3.1"; }
   run apply_pain
   [[ "${output}" != *"display-popup"* ]]
@@ -285,6 +302,7 @@ teardown() {
 }
 
 @test "applier - disabled keys skip the new bindings too" {
+  tmux set-option -gq "@pane_control_scratch_key" "g"
   tmux set-option -gq "@pane_control_disabled_keys" "@ ! + g"
   run apply_pain
   [[ "${output}" != *"break-pane"* ]]
@@ -322,4 +340,24 @@ teardown() {
 
   # Assert
   [ "${status}" -eq 0 ]
+}
+
+@test "applier - actions outside the split, resize and pane-movement set are unbound by default" {
+  # Arrange
+  tmux set-option -gu "@pane_control_sync_key"
+
+  # Act
+  run apply_pain
+
+  # Assert
+  [[ "${output}" != *"synchronize-panes"* ]] || false
+  [[ "${output}" != *"swap-window"* ]] || false
+  [[ "${output}" != *"move-window"* ]] || false
+  [[ "${output}" != *"kill-window"* ]] || false
+  [[ "${output}" != *"select-layout"* ]] || false
+  [[ "${output}" != *"respawn-pane"* ]] || false
+  [[ "${output}" != *"capture-pane"* ]] || false
+  [[ "${output}" != *"select-pane -T"* ]] || false
+  [[ "${output}" != *"display-popup"* ]] || false
+  [[ "${output}" == *"split-window -h -c #{pane_current_path}"* ]]
 }

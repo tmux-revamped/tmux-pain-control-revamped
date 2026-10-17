@@ -35,6 +35,7 @@ get_opt() {
 pain_bind() {
   local flags="${1}" key="${2}" desc="${3}"
   shift 3
+  [[ -n "${key}" ]] || return 0
   key_disabled "${key}" "${PAIN_DISABLED}" && return 0
   if [[ "${PAIN_NOTES}" == "1" ]]; then
     # shellcheck disable=SC2086
@@ -84,7 +85,7 @@ apply_pain() {
   local ver step npath synckey splitf vmark scratchcmd
   ver="$(tmux_version)"
   step="$(get_opt @pane_resize 5)"
-  synckey="$(get_opt @pane_control_sync_key S)"
+  synckey="$(get_opt @pane_control_sync_key "")"
   npath="$(get_opt @new_window_path true)"
   PAIN_DISABLED="$(get_opt @pane_control_disabled_keys "")"
   PAIN_NOTES=0
@@ -142,15 +143,15 @@ apply_pain() {
   esac
 
   # Move the current window left or right, keeping focus on it.
-  pain_bind "-r" "<" "Swap window left" swap-window -d -t -1
-  pain_bind "-r" ">" "Swap window right" swap-window -d -t +1
+  pain_bind "-r" "$(get_opt @pane_control_swap_window_left_key "")" "Swap window left" swap-window -d -t -1
+  pain_bind "-r" "$(get_opt @pane_control_swap_window_right_key "")" "Swap window right" swap-window -d -t +1
 
   # Move the current window into another session by name.
-  pain_bind "" "$(get_opt @pane_control_move_window_key '.')" "Move window to session" \
+  pain_bind "" "$(get_opt @pane_control_move_window_key '')" "Move window to session" \
     command-prompt -p "move window to session:" "move-window -t '%%'"
 
   # Confirm before killing the window.
-  pain_bind "" "$(get_opt @pane_control_kill_window_key '&')" "Kill window" \
+  pain_bind "" "$(get_opt @pane_control_kill_window_key '')" "Kill window" \
     confirm-before -p "kill-window #W? (y/n)" kill-window
 
   # Pull a pane in from another window, or push the current pane out to its own.
@@ -179,25 +180,25 @@ apply_pain() {
   fi
 
   # Layout presets.
-  pain_bind "" "$(get_opt @pane_control_layout_even_h_key E)" "Even-horizontal layout" \
+  pain_bind "" "$(get_opt @pane_control_layout_even_h_key '')" "Even-horizontal layout" \
     select-layout even-horizontal
-  pain_bind "" "$(get_opt @pane_control_layout_even_v_key V)" "Even-vertical layout" \
+  pain_bind "" "$(get_opt @pane_control_layout_even_v_key '')" "Even-vertical layout" \
     select-layout even-vertical
-  pain_bind "" "$(get_opt @pane_control_layout_main_v_key B)" "Main-vertical layout" \
+  pain_bind "" "$(get_opt @pane_control_layout_main_v_key '')" "Main-vertical layout" \
     select-layout main-vertical
 
   # Respawn the current pane, confirming first since it kills the running process.
-  pain_bind "" "$(get_opt @pane_control_respawn_key R)" "Respawn pane" \
+  pain_bind "" "$(get_opt @pane_control_respawn_key '')" "Respawn pane" \
     confirm-before -p "respawn-pane? (y/n)" "respawn-pane -k"
 
   # Capture the whole scrollback to a file, prompting for the path.
-  pain_bind "" "$(get_opt @pane_control_capture_key C)" "Capture scrollback to file" \
+  pain_bind "" "$(get_opt @pane_control_capture_key '')" "Capture scrollback to file" \
     command-prompt -p "save scrollback to:" -I "${HOME}/tmux-scrollback.log" \
     "capture-pane -S - ; save-buffer '%%' ; delete-buffer"
 
   # Name the current pane from a prompt. Pane titles arrived in 2.6.
   if version_ge "${ver}" 2.6; then
-    pain_bind "" "$(get_opt @pane_control_pane_name_key P)" "Name pane" \
+    pain_bind "" "$(get_opt @pane_control_pane_name_key '')" "Name pane" \
       command-prompt -p "pane title:" "select-pane -T '%%'"
   fi
 
@@ -211,10 +212,10 @@ apply_pain() {
   if version_ge "${ver}" 3.2; then
     scratchcmd="$(get_opt @pane_control_scratch_command "")"
     if [[ -n "${scratchcmd}" ]]; then
-      pain_bind "" "$(get_opt @pane_control_scratch_key g)" "Scratch popup" \
+      pain_bind "" "$(get_opt @pane_control_scratch_key '')" "Scratch popup" \
         display-popup -E -d "${_path}" -w 80% -h 80% "${scratchcmd}"
     else
-      pain_bind "" "$(get_opt @pane_control_scratch_key g)" "Scratch popup" \
+      pain_bind "" "$(get_opt @pane_control_scratch_key '')" "Scratch popup" \
         display-popup -E -d "${_path}" -w 80% -h 80%
     fi
   fi

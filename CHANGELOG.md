@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-17
+
+### Changed
+
+- **Breaking:** the plugin binds only splits, resizing and pane movement by
+  default, so the tmux-revamped family installs with no key bound twice. Each
+  other action is now unbound until its option is set: `S` sync
+  (`@pane_control_sync_key`), `<` and `>` window swap
+  (`@pane_control_swap_window_left_key`, `@pane_control_swap_window_right_key`,
+  new), `.` move window (`@pane_control_move_window_key`), `&` kill window
+  (`@pane_control_kill_window_key`), `E` `V` `B` layouts
+  (`@pane_control_layout_even_h_key`, `@pane_control_layout_even_v_key`,
+  `@pane_control_layout_main_v_key`), `R` respawn
+  (`@pane_control_respawn_key`), `C` capture (`@pane_control_capture_key`),
+  `P` pane name (`@pane_control_pane_name_key`) and `g` scratch popup
+  (`@pane_control_scratch_key`). Set an option to its old key to restore it.
+  Navigation, resize, the splits, `*`, `c`, `@`, `!`, `{`, `}`, `+`, `m` and
+  `=` keep their keys.
+
 ### Fixed
 
 - Version checks compare major and minor numerically in bash instead of
