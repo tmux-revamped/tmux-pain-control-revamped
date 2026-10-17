@@ -8,7 +8,7 @@
 
 </div>
 
-**35+** bindings · **tmux 1.9 to 3.5** · **vim aware** · **77** tests · **95%+** coverage
+**35+** bindings · **tmux 1.9 to 3.5** · **vim aware** · **95%+** coverage
 
 Pane navigation, resizing, splits that keep the current directory, and window movement, the conventions almost everyone hand-rolls, as a perfected superset of [tmux-pain-control](https://github.com/tmux-plugins/tmux-pain-control). Every binding is gated to the tmux versions that support it, so the same plugin runs cleanly on every tmux TPM supports, from 1.9 up. Any key can be turned off to avoid a conflict, and an optional smart `Ctrl+h/j/k/l` coexists with [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
 

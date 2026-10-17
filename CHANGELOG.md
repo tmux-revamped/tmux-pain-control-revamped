@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Version checks compare major and minor numerically in bash instead of
   relying on `sort -V`, which some `sort` implementations lack.
+- Negative test assertions that were not the last line of a test now fail
+  the test when they do not hold.
 
 ## [1.1.0] - 2026-06-30
 

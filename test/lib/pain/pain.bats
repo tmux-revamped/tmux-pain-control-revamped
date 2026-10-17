@@ -22,7 +22,8 @@ teardown() {
 @test "pain.sh - version_ge compares correctly" {
   version_ge 3.4 2.3
   version_ge 2.4 2.4
-  ! version_ge 2.2 2.3
+  run version_ge 2.2 2.3
+  [ "${status}" -eq 1 ]
   ! version_ge "" 2.3
 }
 
@@ -40,7 +41,8 @@ teardown() {
 @test "pain.sh - key_disabled matches space or comma lists" {
   key_disabled "c" "c < >"
   key_disabled "<" "c,<,>"
-  ! key_disabled "h" "c < >"
+  run key_disabled "h" "c < >"
+  [ "${status}" -eq 1 ]
   ! key_disabled "c" ""
 }
 
