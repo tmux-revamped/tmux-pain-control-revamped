@@ -12,8 +12,15 @@ teardown() {
 }
 
 @test "constants.sh - version is set and matches the documented value" {
-  variable_exists PAIN_CONTROL_REVAMPED_VERSION
-  [[ "${PAIN_CONTROL_REVAMPED_VERSION}" == "1.1.0" ]]
+  # Arrange
+  local expected="2.0.0"
+
+  # Act
+  run variable_exists PAIN_CONTROL_REVAMPED_VERSION
+
+  # Assert
+  [ "${status}" -eq 0 ] || false
+  [[ "${PAIN_CONTROL_REVAMPED_VERSION}" == "${expected}" ]]
 }
 
 @test "constants.sh - shared defaults are present" {
