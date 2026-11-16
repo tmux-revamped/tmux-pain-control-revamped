@@ -1,5 +1,35 @@
 # Changelog
 
+# [3.0.0](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v2.0.0...v3.0.0) (2026-11-16)
+
+
+* feat!: rewrite the plugin in POSIX sh ([0450e21](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/0450e218c90acafc0e7be93dfb320f4422e88afd))
+
+
+### Bug Fixes
+
+* **family:** fail when git cannot read a mode ([460137f](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/460137f57663a676f1c229ab8b03de873d47254a))
+* **family:** honor only active exceptions ([0038b87](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/0038b87696cb7f92a776f6b45f4d7ad6d051966e))
+* **family:** reject unquoted replacements ([32cb286](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/32cb28603d180a51d5e0a17684d8f673eeeb038b))
+* **family:** require executable entry points ([9c3c8cf](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/9c3c8cfe0c75e28fe3f9c13e71e5563cd7d867b8))
+
+
+### Features
+
+* add a shared desktop notifier ([403d27b](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/403d27b1f7e84ead1f74a206f05d03c72d39e622))
+* **family:** accept bot updates in the audit ([5bff69c](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/5bff69cfaa5d1ea4f96f1a41c94c79633897569b))
+
+
+### BREAKING CHANGES
+
+* every option is renamed and the old names no longer
+work. @pane_control_<setting> becomes @pain_control_revamped_<setting>
+for disabled_keys, no_wrap, vim_navigation, vim_pattern, pane_titles,
+scratch_command and every *_key option; @pane_resize becomes
+@pain_control_revamped_resize; @new_window_path becomes
+@pain_control_revamped_new_window_path. PAIN_DRY_RUN is gone; use
+pain-control-revamped list.
+
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
