@@ -1,5 +1,12 @@
 # Changelog
 
+# [3.1.0](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.0.0...v3.1.0) (2026-11-16)
+
+
+### Features
+
+* add power zoom, focus size and smart-splits ([170f4c9](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/170f4c9352ea9b97fa2046ba6ebd311e5dab7495))
+
 # [3.0.0](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v2.0.0...v3.0.0) (2026-11-16)
 
 
