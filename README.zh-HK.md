@@ -4,67 +4,55 @@
 
 <strong>tmux 的窗格和視窗管理按鍵，配合 tmux 版本，與 vim 相容，每個 prefix 按鍵都可停用。</strong>
 
-[English](README.md) | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | 繁體中文（香港）
+[English](README.md) &nbsp;|&nbsp; [日本語](README.ja.md) &nbsp;|&nbsp; [简体中文](README.zh-Hans.md) &nbsp;|&nbsp; 繁體中文（香港）
 
-[![family](https://img.shields.io/github/actions/workflow/status/tmux-revamped/tmux-pain-control-revamped/family.yml?branch=main&style=flat-square&label=family)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/family.yml)
-[![tests](https://img.shields.io/github/actions/workflow/status/tmux-revamped/tmux-pain-control-revamped/tests.yml?branch=main&style=flat-square&label=tests)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml)
+[![ci](https://img.shields.io/github/actions/workflow/status/tmux-revamped/tmux-pain-control-revamped/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/ci.yml)
 [![release](https://img.shields.io/github/v/release/tmux-revamped/tmux-pain-control-revamped?style=flat-square&label=release)](https://github.com/tmux-revamped/tmux-pain-control-revamped/releases/latest)
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/tmux-revamped/tmux-pain-control-revamped?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/tmux-revamped/tmux-pain-control-revamped)
 [![license](https://img.shields.io/github/license/tmux-revamped/tmux-pain-control-revamped?style=flat-square&label=license)](LICENSE)
 
 <p align="center">
-  <a href="#what-it-does">功能</a> |
-  <a href="#installation">安裝</a> |
-  <a href="#usage">用法</a> |
-  <a href="#configuration">設定</a> |
-  <a href="#key-bindings">按鍵綁定</a> |
-  <a href="#how-it-works">運作原理</a>
+  <a href="#快速開始"><strong>快速開始</strong></a> &nbsp;|&nbsp;
+  <a href="#用法">用法</a> &nbsp;|&nbsp;
+  <a href="#按鍵">按鍵</a> &nbsp;|&nbsp;
+  <a href="#畫面">畫面</a>
 </p>
 
 </div>
 
-預設綁定 **27** 個 prefix 按鍵，另有 **12** 個可選按鍵，**28** 個選項，支援 tmux **3.2** 或以上版本。
+<p align="center">
+  <img src="screens/hero.gif" alt="以插件的按鍵分割、切換、調整大小和提升窗格的 tmux" width="800">
+</p>
+
+```console
+$ pain-control-revamped list
+bind-key -N Select pane left h select-pane -L
+bind-key -N Select pane left C-h select-pane -L
+bind-key -N Select pane below j select-pane -D
+bind-key -N Select pane below C-j select-pane -D
+```
+
+每個按鍵都按 tmux 版本檢查，附有 `prefix ?` 顯示的說明，亦都可以不綁定。插件載入時，所有按鍵以一次呼叫交給 tmux，之後不會再執行任何東西。
 
 ---
 
-<a id="what-it-does"></a>
+## 快速開始
 
-## 功能
+### 前提條件
 
-本插件綁定窗格導覽、調整大小、保留目前目錄的分割，以及窗格和視窗的移動。它是 [tmux-pain-control](https://github.com/tmux-plugins/tmux-pain-control) 的重寫版本，加入了更多操作，並刻意取代 tmux 本身的部分按鍵。
+| 工具 | 版本 | 用途 |
+|:-----|:--------|:---------|
+| tmux | 3.2 或以上 | 系列的最低版本；較舊的版本會少了它不支援的按鍵 |
+| `ps` | 任何 | 開啟 vim 導覽時 |
+| gum | 可選 | `pain-control-revamped` 的選單、表格和顏色；沒有它時每個指令都輸出純文字 |
 
-| 功能 | 選項 |
-|:-----|:-----|
-| 分割和新視窗在目前窗格的目錄中開啟，包括 `"` 和 `%` | `c` 由 `@new_window_path` 控制 |
-| 按設定的儲存格數目調整大小 | `@pane_resize` |
-| 沿窗格較長的一邊分割 | `@pane_control_smart_split_key` |
-| 合併、拆出、交換、提升和標記窗格 | `@pane_control_join_key` 等窗格按鍵 |
-| 毋須 prefix 的 `Ctrl+h/j/k/l` 在 vim 分割畫面和 tmux 窗格之間移動 | `@pane_control_vim_navigation` |
-| 窗格選擇在視窗邊緣停止 | `@pane_control_no_wrap` |
-| 關閉清單中的任何按鍵 | `@pane_control_disabled_keys` |
-
-<a id="requirements"></a>
-
-## 系統要求
-
-| 要求 | 版本 |
-|:-----|:-----|
-| tmux | 3.2 或以上 |
-| bash | 3.2 或以上 |
-
-可在 Linux 和 macOS 上執行，支援 BSD、GNU 或 uutils coreutils。智能 vim 導覽使用 `ps` 和 `grep` 偵測窗格中的 vim。
-
-<a id="installation"></a>
-
-## 安裝
-
-使用 [TPM](https://github.com/tmux-plugins/tpm) 時，將插件加入 `~/.tmux.conf`，然後按 `prefix + I`：
+### 安裝
 
 ```tmux
 set -g @plugin 'tmux-revamped/tmux-pain-control-revamped'
 ```
 
-手動安裝時，複製儲存庫，並在 `~/.tmux.conf` 中執行入口腳本：
+然後按 `prefix + I`。不使用 TPM 時，複製儲存庫，並在 `~/.tmux.conf` 中執行它的入口腳本：
 
 ```bash
 git clone https://github.com/tmux-revamped/tmux-pain-control-revamped ~/.tmux/plugins/tmux-pain-control-revamped
@@ -74,149 +62,152 @@ git clone https://github.com/tmux-revamped/tmux-pain-control-revamped ~/.tmux/pl
 run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 ```
 
-<a id="usage"></a>
+在複製的目錄中執行 `make install`，亦會把 `pain-control-revamped` 放入 `~/.local/bin`，並把它的 man 手冊和自動完成放在 `~/.local/share` 下。
+
+### 驗證
+
+```bash
+~/.tmux/plugins/tmux-pain-control-revamped/bin/pain-control-revamped doctor
+```
 
 ## 用法
 
-安裝後，[按鍵綁定](#key-bindings)中的按鍵在 prefix 之後生效。`prefix + |` 向右分割，`prefix + -` 向下分割，兩者都使用目前目錄。`prefix + h/j/k/l` 在窗格之間移動，`prefix + H/J/K/L` 調整窗格大小。
+| 指令 | 作用 |
+|:--------|:-------------|
+| `pain-control-revamped apply` | 立即綁定所有按鍵；tmux 載入插件時入口腳本會執行它 |
+| `pain-control-revamped list` | 列出 apply 會做的每個綁定；`--json` 輸出一個物件 |
+| `pain-control-revamped doctor` | 每個依賴項目一行 |
+| `pain-control-revamped version` | 版本，然後是 tmux 的版本 |
+| `pain-control-revamped help` | 說明頁面。`man pain-control-revamped` 說明同樣的指令和設定 |
+| `pain-control-revamped` | 在終端機中顯示選單 |
 
-開啟你需要的可選操作，並關閉你在其他地方要用的按鍵：
+| tmux 選項 | 預設值 | 意思 |
+|:------------|:--------|:--------|
+| `@pain_control_revamped_resize` | `5` | 每次調整大小移動的格數 |
+| `@pain_control_revamped_new_window_path` | `true` | `c` 在窗格所在的資料夾開啟新視窗 |
+| `@pain_control_revamped_disabled_keys` | 無 | 不綁定的按鍵，以空格或逗號分隔 |
+| `@pain_control_revamped_no_wrap` | `off` | `on` 令窗格切換停在視窗邊緣 |
+| `@pain_control_revamped_vim_navigation` | `off` | `on` 不經 prefix 綁定 `C-h` 至 `C-l` 和 `C-\`，窗格中執行 vim 時把按鍵交給 vim |
+| `@pain_control_revamped_vim_pattern` | vim、nvim、view、fzf | vim 導覽視為 vim 的程序名稱 |
+| `@pain_control_revamped_pane_titles` | `off` | `on` 在邊框上顯示每個窗格的編號和標題 |
+| `@pain_control_revamped_scratch_command` | 一個 shell | 暫存彈出視窗執行的內容 |
 
-```tmux
-set -g @pane_control_sync_key 'S'
-set -g @pane_control_swap_window_left_key '<'
-set -g @pane_control_swap_window_right_key '>'
-set -g @pane_control_scratch_key 'g'
-set -g @pane_control_scratch_command 'htop'
+下一節的每個按鍵亦有自己的選項，例如 `@pain_control_revamped_join_key`。每個選項亦是以連字號命名的指令選項，例如 `--join-key J`，以及一個環境變數，例如 `PAIN_CONTROL_REVAMPED_JOIN_KEY`；指令列優先於環境變數，環境變數優先於 tmux 選項。空的 tmux 選項代表預設值。
 
-set -g @pane_control_disabled_keys 'c, *'
-set -g @pane_resize 10
-```
+3.0.0 之前的選項名稱 `@pane_control_*`、`@pane_resize` 和 `@new_window_path` 已不再生效。
 
-取代 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) 的 tmux 部分：
+<a id="按鍵"></a>
 
-```tmux
-set -g @pane_control_vim_navigation 'on'
-```
+## 按鍵
 
-之後，vim 取得焦點時 `Ctrl+h/j/k/l` 移動 vim 分割畫面，否則移動 tmux 窗格，`Ctrl+\` 回到上一個窗格。由於這會佔用毋須 prefix 的 `Ctrl+l`，`prefix + C-l` 改為傳送清除畫面。vim 一方仍須在編輯器中安裝 vim-tmux-navigator 插件。
+這些按鍵都在 prefix 之後按。pain-control 是 tmux-revamped 系列中宣告的覆寫者，因此它們按設計取代 tmux 內建的按鍵。
 
-<a id="configuration"></a>
+| 按鍵 | 作用 | 選項 |
+|:----|:-------|:-------|
+| `h` `j` `k` `l`、`C-h` `C-j` `C-k` `C-l` | 選擇左、下、上、右的窗格 | 無 |
+| `H` `J` `K` `L` | 調整窗格大小，可重複 | 無 |
+| `\|` 和 `%`、`-` 和 `"` | 在目前資料夾向右或向下分割 | 無 |
+| `\` 和 `_` | 按視窗全寬或全高分割 | 無 |
+| `*` | 沿較長的一邊分割 | `_smart_split_key` |
+| `c` | 在目前資料夾開啟新視窗 | `_new_window_path` |
+| `@` | 從另一個視窗合併窗格 | `_join_key` |
+| `!` | 把窗格拆成獨立的視窗 | `_break_key` |
+| `{` `}` | 與上一個或下一個窗格交換，可重複 | `_swap_prev_key`、`_swap_next_key` |
+| `+` | 把窗格提升至左上位置 | `_promote_key` |
+| `m`、`=` | 標記窗格，與已標記的窗格交換 | `_mark_key`、`_swap_mark_key` |
 
-## 設定
+以下按鍵在選項設定之前不會綁定：`_sync_key` 切換窗格同步，`_swap_window_left_key` 和 `_swap_window_right_key` 移動視窗，`_move_window_key` 把視窗移至另一個工作階段，`_kill_window_key` 關閉視窗，`_layout_even_h_key`、`_layout_even_v_key` 和 `_layout_main_v_key` 選擇版面配置，`_respawn_key` 重新啟動窗格，`_capture_key` 儲存回捲內容，`_pane_name_key` 為窗格命名，`_scratch_key` 開啟暫存彈出視窗。
 
-| 選項 | 預設值 | 意思 |
-|:-----|:-------|:-----|
-| `@pane_resize` | `5` | 每次按調整大小鍵移動的儲存格數目 |
-| `@new_window_path` | `true` | 為 `true`、`on` 或 `1` 時，`c` 在目前目錄開啟新視窗；其他值不改動 `c` |
-| `@pane_control_disabled_keys` | 空 | 不綁定的按鍵，以空格或逗號分隔，例如 `c, <` |
-| `@pane_control_no_wrap` | `off` | 設為 `on` 時，`h/j/k/l` 選擇在視窗邊緣停止，而不是繞到另一邊 |
-| `@pane_control_pane_titles` | `off` | 設為 `on` 時，在窗格上邊框顯示窗格編號和標題 |
-| `@pane_control_vim_navigation` | `off` | 設為 `on` 時，綁定帶 vim 偵測、毋須 prefix 的 `Ctrl+h/j/k/l` 和 `Ctrl+\` |
-| `@pane_control_vim_pattern` | vim-tmux-navigator 的模式 | 判斷窗格正在執行 vim 的程序名稱正規表示式 |
-| `@pane_control_scratch_command` | 空 | 臨時彈出視窗執行的指令；空白時開啟 shell |
-| `@pane_control_smart_split_key` | `*` | 智能分割 |
-| `@pane_control_join_key` | `@` | 提示後從另一個視窗合併窗格 |
-| `@pane_control_break_key` | `!` | 將目前窗格拆成獨立視窗 |
-| `@pane_control_swap_prev_key` | `{` | 與上一個窗格交換 |
-| `@pane_control_swap_next_key` | `}` | 與下一個窗格交換 |
-| `@pane_control_promote_key` | `+` | 將窗格交換到左上位置 |
-| `@pane_control_mark_key` | `m` | 標記窗格 |
-| `@pane_control_swap_mark_key` | `=` | 與已標記的窗格交換 |
-| `@pane_control_sync_key` | 空 | 切換 `synchronize-panes` 並顯示其狀態 |
-| `@pane_control_swap_window_left_key` | 空 | 將視窗向左移一位 |
-| `@pane_control_swap_window_right_key` | 空 | 將視窗向右移一位 |
-| `@pane_control_move_window_key` | 空 | 提示後將視窗移到另一個工作階段 |
-| `@pane_control_kill_window_key` | 空 | 確認後關閉視窗 |
-| `@pane_control_layout_even_h_key` | 空 | `even-horizontal` 版面配置 |
-| `@pane_control_layout_even_v_key` | 空 | `even-vertical` 版面配置 |
-| `@pane_control_layout_main_v_key` | 空 | `main-vertical` 版面配置 |
-| `@pane_control_respawn_key` | 空 | 確認後重新啟動窗格 |
-| `@pane_control_capture_key` | 空 | 提示（預設 `~/tmux-scrollback.log`）後將整個捲動緩衝區儲存到檔案 |
-| `@pane_control_pane_name_key` | 空 | 提示後設定窗格標題 |
-| `@pane_control_scratch_key` | 空 | 在目前目錄開啟佔 80% 的彈出 shell |
+版本檢查會去掉舊版 tmux 不支援的功能：全寬分割需要 2.3，標記需要 2.1，窗格名稱和邊緣停止需要 2.6，`{top-left}` 提升需要 3.0，暫存彈出視窗需要 3.2，說明需要 3.1。
 
-按鍵選項設為空值時不會綁定任何按鍵。本插件沒有內部狀態選項。
+<a id="畫面"></a>
 
-<a id="key-bindings"></a>
+## 畫面
 
-## 按鍵綁定
+<details>
+<summary>每個畫面都以 <code>make screens</code> 在真實的 tmux 中錄製，按下的每個按鍵都顯示在狀態列上</summary>
+<br>
 
-### 預設綁定
+<table>
+<tr>
+<td width="50%" valign="top"><img src="screens/splits.png" alt="pain-control-revamped：分割、切換、調整大小、提升和沿長邊分割"><br><sub>分割、切換、調整大小、提升和沿長邊分割，來自 <code>hero.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/window.png" alt="pain-control-revamped：在目前資料夾的新視窗"><br><sub>在目前資料夾的新視窗，來自 <code>keys.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/break.png" alt="pain-control-revamped：拆成獨立視窗的窗格"><br><sub>拆成獨立視窗的窗格，來自 <code>keys.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/join.png" alt="pain-control-revamped：從另一個視窗合併窗格"><br><sub>從另一個視窗合併窗格，來自 <code>keys.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/mark.png" alt="pain-control-revamped：標記窗格並與它交換"><br><sub>標記窗格並與它交換，來自 <code>keys.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/swap.png" alt="pain-control-revamped：與上一個和下一個窗格交換"><br><sub>與上一個和下一個窗格交換，來自 <code>keys.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/titles.png" alt="pain-control-revamped：邊框上的窗格標題"><br><sub>邊框上的窗格標題，來自 <code>options.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/sync.png" alt="pain-control-revamped：同步的窗格"><br><sub>同步的窗格，來自 <code>options.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/vim-nowrap.png" alt="pain-control-revamped：vim 導覽和邊緣停止"><br><sub>vim 導覽和邊緣停止，來自 <code>options.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/scratch-popup.png" alt="pain-control-revamped：暫存彈出視窗"><br><sub>暫存彈出視窗，來自 <code>options.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/list.png" alt="pain-control-revamped：list"><br><sub><code>list</code>，來自 <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/json.png" alt="pain-control-revamped：list --json"><br><sub><code>list --json</code>，來自 <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/doctor.png" alt="pain-control-revamped：doctor"><br><sub><code>doctor</code>，來自 <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/menu.png" alt="pain-control-revamped：選單"><br><sub>選單，來自 <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/plain-menu.png" alt="pain-control-revamped：沒有 gum 時的選單"><br><sub>沒有 gum 時的選單，來自 <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/plain-apply.png" alt="pain-control-revamped：從選單執行 apply"><br><sub>從選單執行 <code>apply</code>，來自 <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/version.png" alt="pain-control-revamped：版本"><br><sub>版本，來自 <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/error.png" alt="pain-control-revamped：未知的指令"><br><sub>未知的指令，來自 <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/themes.png" alt="pain-control-revamped：六個主題下的標題"><br><sub>六個主題下的標題，來自 <code>themes.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/help.png" alt="pain-control-revamped：說明頁面"><br><sub>說明頁面，來自 <code>help.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/accent.png" alt="pain-control-revamped：來自 PAIN_CONTROL_REVAMPED_ACCENT 的強調色"><br><sub>來自 <code>PAIN_CONTROL_REVAMPED_ACCENT</code> 的強調色，來自 <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"></td></tr>
+</table>
 
-以下按鍵都在 prefix 之後按。導覽、調整大小、分割和 `c` 的按鍵不能更改，只能用 `@pane_control_disabled_keys` 關閉。
+</details>
 
-| 按鍵 | 動作 | 可連按 |
-|:-----|:-----|:------:|
-| `h` `j` `k` `l`、`C-h` `C-j` `C-k` `C-l` | 選擇左、下、上、右面的窗格 | 否 |
-| `H` `J` `K` `L` | 按 `@pane_resize` 個儲存格調整窗格大小 | 是 |
-| `\|` 和 `%` | 在目前目錄向右分割 | 否 |
-| `-` 和 `"` | 在目前目錄向下分割 | 否 |
-| `\` | 按整個視窗闊度分割 | 否 |
-| `_` | 按整個視窗高度分割 | 否 |
-| `*` | 沿較長的一邊分割 | 否 |
-| `c` | 在目前目錄開新視窗 | 否 |
-| `@` | 從另一個視窗合併窗格 | 否 |
-| `!` | 將窗格拆成獨立視窗 | 否 |
-| `{` `}` | 與上一個或下一個窗格交換 | 是 |
-| `+` | 將窗格提升到左上位置 | 否 |
-| `m` | 標記窗格 | 否 |
-| `=` | 與已標記的窗格交換 | 否 |
+## 可攜性
 
-`pain-control` 是 tmux-revamped 插件家族中聲明的覆寫者，所以這些按鍵按設計取代 tmux 的預設綁定。
+插件是 POSIX `sh`。CI 在下列每一行上執行全部測試。
 
-### 可選按鍵
+| Shell | 狀態 |
+|:------|:-------|
+| `dash`、macOS 上的 `/bin/sh` | 支援 |
+| `bash` 3.2 和 5.x、系統內建的 `zsh` 和 Homebrew 的 `zsh` | 支援 |
 
-2.0.0 版取消了這些綁定。將選項設為原來的按鍵即可還原：
-
-| 選項 | 原按鍵 | 動作 |
-|:-----|:------:|:-----|
-| `@pane_control_sync_key` | `S` | 切換窗格同步輸入 |
-| `@pane_control_swap_window_left_key` | `<` | 視窗向左移 |
-| `@pane_control_swap_window_right_key` | `>` | 視窗向右移 |
-| `@pane_control_move_window_key` | `.` | 將視窗移到另一個工作階段 |
-| `@pane_control_kill_window_key` | `&` | 關閉視窗 |
-| `@pane_control_layout_even_h_key` | `E` | `even-horizontal` 版面配置 |
-| `@pane_control_layout_even_v_key` | `V` | `even-vertical` 版面配置 |
-| `@pane_control_layout_main_v_key` | `B` | `main-vertical` 版面配置 |
-| `@pane_control_respawn_key` | `R` | 重新啟動窗格 |
-| `@pane_control_capture_key` | `C` | 儲存捲動緩衝區 |
-| `@pane_control_pane_name_key` | `P` | 為窗格命名 |
-| `@pane_control_scratch_key` | `g` | 臨時彈出視窗 |
-
-### 智能 vim 導覽
-
-`@pane_control_vim_navigation` 設為 `on` 時，插件亦會在 root 表和 `copy-mode-vi` 中綁定 `C-h`、`C-j`、`C-k`、`C-l` 和 `C-\`，並將 `prefix + C-l` 改為清除畫面。`@pane_control_disabled_keys` 對這些按鍵不起作用。
-
-<a id="how-it-works"></a>
-
-## 運作原理
-
-tmux 載入插件時，[`pain-control-revamped.tmux`](pain-control-revamped.tmux) 會執行一次 [`src/pain.sh`](src/pain.sh)。該腳本讀取選項和 tmux 版本，然後為每個按鍵執行 `bind-key`。之後沒有任何在背景執行的內容。
-
-每個綁定都附有 `-N` 說明，所以 `prefix + ?` 會連同說明一併列出。在 tmux 3.2 以下版本中，腳本的版本檢查仍會略去該 tmux 不支援的功能：全闊和全高分割需要 2.3，標記需要 2.1，窗格命名和邊緣不環繞需要 2.6，使用 `{top-left}` 的提升需要 3.0，臨時彈出視窗需要 3.2。
-
-開啟 vim 導覽後，每個組合鍵都會對窗格的 TTY 執行 `ps`，並以 `@pane_control_vim_pattern` 比對程序名稱。相符時按鍵傳送給 vim，否則由 tmux 選擇窗格。
-
-版本和按鍵的輔助函數位於 [`src/lib/pain/pain.sh`](src/lib/pain/pain.sh)。設定 `PAIN_DRY_RUN` 後，腳本會列印每個 tmux 指令而不執行，測試套件就是用這方法檢查按鍵綁定。
-
-<a id="development"></a>
+| 系統 | 狀態 |
+|:-------|:-------|
+| macOS | Apple Silicon 和 Intel 上的 Tahoe，使用內建的工具、Homebrew 的 GNU 工具和 Homebrew 的 uutils |
+| Linux | x86_64 和 arm64 上的 Ubuntu 26.04，使用 GNU coreutils、uutils 和 BusyBox |
 
 ## 開發
 
-| 指令 | 作用 |
-|:-----|:-----|
-| `make test` | 執行 bats 測試套件 |
-| `make lint` | 對所有 shell 檔案執行 shellcheck |
-| `make coverage` | 在 Linux 上用 kcov 量度行覆蓋率，低於 95% 時失敗 |
+| 指令 | 執行內容 |
+|:--------|:-------------|
+| `make fmt` | 對每個腳本執行 shfmt `-i 2` |
+| `make lint` | shfmt、ShellCheck、mandoc、yamllint 和 actionlint，零警告 |
+| `make test` | 在系統 `sh` 下執行 bats 測試 |
+| `make test-all` | 在每個已安裝的 shell 下執行測試，macOS 上包括 bash 和 zsh 的兩種版本 |
+| `make test-linux` | 在 Ubuntu 容器中執行測試 |
+| `make coverage` | 在這部 Mac 和 Ubuntu 容器中執行 bashcov，合併後以 100% 為門檻 |
+| `make screens` | 以 VHS 在 tmux 中從真實插件錄製上述畫面，在 macOS 上執行 |
+| `make install` | 把指令、man 手冊和自動完成安裝到 `PREFIX` 下 |
 
-變更紀錄見 [CHANGELOG.md](CHANGELOG.md)。
-
-<a id="license"></a>
+提交遵循 Conventional Commits 格式，直接進入 `main`。`main` 上的 `ci` 通過後，`release.yml` 會執行 semantic-release：自上一個標籤以來的每個 `feat` 或 `fix` 都會發佈新版本，更新版本常數，並把說明寫入 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 授權
 
-[MIT](LICENSE)
+[MIT](LICENSE)，copyright Gustavo Franco。
 
 <!-- family:begin -->
 

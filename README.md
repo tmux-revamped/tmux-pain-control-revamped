@@ -4,61 +4,55 @@
 
 <strong>Pane and window management bindings for tmux, version aware, vim friendly, every prefix key can be disabled.</strong>
 
-English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁體中文（香港）](README.zh-HK.md)
+English &nbsp;|&nbsp; [日本語](README.ja.md) &nbsp;|&nbsp; [简体中文](README.zh-Hans.md) &nbsp;|&nbsp; [繁體中文（香港）](README.zh-HK.md)
 
-[![family](https://img.shields.io/github/actions/workflow/status/tmux-revamped/tmux-pain-control-revamped/family.yml?branch=main&style=flat-square&label=family)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/family.yml)
-[![tests](https://img.shields.io/github/actions/workflow/status/tmux-revamped/tmux-pain-control-revamped/tests.yml?branch=main&style=flat-square&label=tests)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/tests.yml)
+[![ci](https://img.shields.io/github/actions/workflow/status/tmux-revamped/tmux-pain-control-revamped/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/tmux-revamped/tmux-pain-control-revamped/actions/workflows/ci.yml)
 [![release](https://img.shields.io/github/v/release/tmux-revamped/tmux-pain-control-revamped?style=flat-square&label=release)](https://github.com/tmux-revamped/tmux-pain-control-revamped/releases/latest)
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/tmux-revamped/tmux-pain-control-revamped?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/tmux-revamped/tmux-pain-control-revamped)
 [![license](https://img.shields.io/github/license/tmux-revamped/tmux-pain-control-revamped?style=flat-square&label=license)](LICENSE)
 
 <p align="center">
-  <a href="#what-it-does">What it does</a> |
-  <a href="#installation">Installation</a> |
-  <a href="#usage">Usage</a> |
-  <a href="#configuration">Configuration</a> |
-  <a href="#key-bindings">Key bindings</a> |
-  <a href="#how-it-works">How it works</a>
+  <a href="#quick-start"><strong>Quick start</strong></a> &nbsp;|&nbsp;
+  <a href="#usage">Usage</a> &nbsp;|&nbsp;
+  <a href="#keys">Keys</a> &nbsp;|&nbsp;
+  <a href="#screens">Screens</a>
 </p>
 
 </div>
 
-**27** prefix keys bound by default, **12** more opt-in, **28** options, tmux **3.2** or later.
+<p align="center">
+  <img src="screens/hero.gif" alt="tmux splitting, moving between, resizing and promoting panes with the plugin's keys" width="800">
+</p>
+
+```console
+$ pain-control-revamped list
+bind-key -N Select pane left h select-pane -L
+bind-key -N Select pane left C-h select-pane -L
+bind-key -N Select pane below j select-pane -D
+bind-key -N Select pane below C-j select-pane -D
+```
+
+Every key is checked against the tmux version, carries a note that `prefix ?` shows, and can be left alone. The keys go to tmux in one call when the plugin loads; nothing runs afterwards.
 
 ---
 
-## What it does
+## Quick start
 
-The plugin binds pane navigation, resizing, splits that keep the current directory, and pane and window movement. It is a rewrite of [tmux-pain-control](https://github.com/tmux-plugins/tmux-pain-control) with more actions, and it replaces some of tmux's own keys on purpose.
+### Prerequisites
 
-| Capability | Option |
-|:-----------|:-------|
-| Splits and new windows open in the current pane's directory, `"` and `%` included | `@new_window_path` for `c` |
-| Resize by a set number of cells | `@pane_resize` |
-| Split along the longer side of the pane | `@pane_control_smart_split_key` |
-| Join, break out, swap, promote and mark panes | `@pane_control_join_key` and the other pane keys |
-| Prefixless `Ctrl+h/j/k/l` that moves between vim splits and tmux panes | `@pane_control_vim_navigation` |
-| Stop pane selection at the window edge | `@pane_control_no_wrap` |
-| Turn any listed key off | `@pane_control_disabled_keys` |
+| Tool | Version | Used for |
+|:-----|:--------|:---------|
+| tmux | 3.2 or later | the family floor; older versions lose the keys they lack |
+| `ps` | any | vim navigation, when it is on |
+| gum | optional | the menu, tables and colours of `pain-control-revamped`; without it every command prints plain text |
 
-## Requirements
-
-| Requirement | Version |
-|:------------|:--------|
-| tmux | 3.2 or later |
-| bash | 3.2 or later |
-
-It runs on Linux and macOS with BSD, GNU or uutils coreutils. Smart vim navigation uses `ps` and `grep` to detect vim in the pane.
-
-## Installation
-
-With [TPM](https://github.com/tmux-plugins/tpm), add the plugin to `~/.tmux.conf` and press `prefix + I`:
+### Install
 
 ```tmux
 set -g @plugin 'tmux-revamped/tmux-pain-control-revamped'
 ```
 
-To install by hand, clone the repository and run the entrypoint from `~/.tmux.conf`:
+Then press `prefix + I`. Without TPM, clone the repository and run its entry point from `~/.tmux.conf`:
 
 ```bash
 git clone https://github.com/tmux-revamped/tmux-pain-control-revamped ~/.tmux/plugins/tmux-pain-control-revamped
@@ -68,137 +62,152 @@ git clone https://github.com/tmux-revamped/tmux-pain-control-revamped ~/.tmux/pl
 run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 ```
 
+`make install` in the clone also puts `pain-control-revamped` in `~/.local/bin`, with its man page and completions under `~/.local/share`.
+
+### Verify
+
+```bash
+~/.tmux/plugins/tmux-pain-control-revamped/bin/pain-control-revamped doctor
+```
+
 ## Usage
-
-After installation, the keys in [Key bindings](#key-bindings) work after the prefix. `prefix + |` splits right and `prefix + -` splits down, both in the current directory. `prefix + h/j/k/l` moves between panes and `prefix + H/J/K/L` resizes them.
-
-Turn on the opt-in actions you want, and switch off keys you need elsewhere:
-
-```tmux
-set -g @pane_control_sync_key 'S'
-set -g @pane_control_swap_window_left_key '<'
-set -g @pane_control_swap_window_right_key '>'
-set -g @pane_control_scratch_key 'g'
-set -g @pane_control_scratch_command 'htop'
-
-set -g @pane_control_disabled_keys 'c, *'
-set -g @pane_resize 10
-```
-
-To replace the tmux half of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator):
-
-```tmux
-set -g @pane_control_vim_navigation 'on'
-```
-
-`Ctrl+h/j/k/l` then moves the vim split when vim has focus and the tmux pane otherwise, and `Ctrl+\` goes to the previous pane. Because this takes `Ctrl+l` without a prefix, `prefix + C-l` sends a clear-screen instead. The vim side still needs the vim-tmux-navigator plugin in your editor.
-
-## Configuration
-
-| Option | Default | Meaning |
-|:-------|:--------|:--------|
-| `@pane_resize` | `5` | Cells each resize key moves |
-| `@new_window_path` | `true` | `true`, `on` or `1` binds `c` to open a new window in the current directory; any other value leaves `c` alone |
-| `@pane_control_disabled_keys` | empty | Keys to leave unbound, separated by spaces or commas, such as `c, <` |
-| `@pane_control_no_wrap` | `off` | `on` stops `h/j/k/l` selection at the window edge instead of wrapping |
-| `@pane_control_pane_titles` | `off` | `on` shows the pane index and title in the top pane border |
-| `@pane_control_vim_navigation` | `off` | `on` binds prefixless `Ctrl+h/j/k/l` and `Ctrl+\` with vim detection |
-| `@pane_control_vim_pattern` | the vim-tmux-navigator pattern | Process name regex that marks a pane as running vim |
-| `@pane_control_scratch_command` | empty | Command the scratch popup runs; empty opens your shell |
-| `@pane_control_smart_split_key` | `*` | Smart split |
-| `@pane_control_join_key` | `@` | Join a pane from another window, after a prompt |
-| `@pane_control_break_key` | `!` | Break the current pane into its own window |
-| `@pane_control_swap_prev_key` | `{` | Swap the pane with the previous one |
-| `@pane_control_swap_next_key` | `}` | Swap the pane with the next one |
-| `@pane_control_promote_key` | `+` | Swap the pane into the top-left slot |
-| `@pane_control_mark_key` | `m` | Mark the pane |
-| `@pane_control_swap_mark_key` | `=` | Swap the pane with the marked pane |
-| `@pane_control_sync_key` | empty | Toggle `synchronize-panes` and show its state |
-| `@pane_control_swap_window_left_key` | empty | Move the window one place left |
-| `@pane_control_swap_window_right_key` | empty | Move the window one place right |
-| `@pane_control_move_window_key` | empty | Move the window to another session, after a prompt |
-| `@pane_control_kill_window_key` | empty | Kill the window, after a confirmation |
-| `@pane_control_layout_even_h_key` | empty | `even-horizontal` layout |
-| `@pane_control_layout_even_v_key` | empty | `even-vertical` layout |
-| `@pane_control_layout_main_v_key` | empty | `main-vertical` layout |
-| `@pane_control_respawn_key` | empty | Respawn the pane, after a confirmation |
-| `@pane_control_capture_key` | empty | Save the whole scrollback to a file, after a prompt that offers `~/tmux-scrollback.log` |
-| `@pane_control_pane_name_key` | empty | Set the pane title, after a prompt |
-| `@pane_control_scratch_key` | empty | Open an 80% popup shell in the current directory |
-
-A key option set to an empty value binds nothing. The plugin keeps no internal state options.
-
-## Key bindings
-
-### Bound by default
-
-All of these follow the prefix. The navigation, resize, split and `c` keys cannot be moved, only disabled with `@pane_control_disabled_keys`.
-
-| Key | Action | Repeatable |
-|:----|:-------|:----------:|
-| `h` `j` `k` `l`, `C-h` `C-j` `C-k` `C-l` | Select the pane left, below, above or right | No |
-| `H` `J` `K` `L` | Resize the pane by `@pane_resize` cells | Yes |
-| `\|` and `%` | Split right in the current directory | No |
-| `-` and `"` | Split down in the current directory | No |
-| `\` | Split at full window width | No |
-| `_` | Split at full window height | No |
-| `*` | Split along the longer side | No |
-| `c` | New window in the current directory | No |
-| `@` | Join a pane from another window | No |
-| `!` | Break the pane into its own window | No |
-| `{` `}` | Swap with the previous or next pane | Yes |
-| `+` | Promote the pane to the top-left slot | No |
-| `m` | Mark the pane | No |
-| `=` | Swap with the marked pane | No |
-
-`pain-control` is a declared overrider in the tmux-revamped family, so these keys replace stock tmux bindings by design.
-
-### Opt-in
-
-Version 2.0.0 unbound these. Set the option to the old key to restore one:
-
-| Option | Old key | Action |
-|:-------|:-------:|:-------|
-| `@pane_control_sync_key` | `S` | Toggle synchronized panes |
-| `@pane_control_swap_window_left_key` | `<` | Move the window left |
-| `@pane_control_swap_window_right_key` | `>` | Move the window right |
-| `@pane_control_move_window_key` | `.` | Move the window to a session |
-| `@pane_control_kill_window_key` | `&` | Kill the window |
-| `@pane_control_layout_even_h_key` | `E` | `even-horizontal` layout |
-| `@pane_control_layout_even_v_key` | `V` | `even-vertical` layout |
-| `@pane_control_layout_main_v_key` | `B` | `main-vertical` layout |
-| `@pane_control_respawn_key` | `R` | Respawn the pane |
-| `@pane_control_capture_key` | `C` | Capture the scrollback |
-| `@pane_control_pane_name_key` | `P` | Name the pane |
-| `@pane_control_scratch_key` | `g` | Scratch popup |
-
-### Smart vim navigation
-
-With `@pane_control_vim_navigation` set to `on`, the plugin also binds `C-h`, `C-j`, `C-k`, `C-l` and `C-\` in the root table and in `copy-mode-vi`, and rebinds `prefix + C-l` to clear the screen. `@pane_control_disabled_keys` does not apply to these.
-
-## How it works
-
-[`pain-control-revamped.tmux`](pain-control-revamped.tmux) runs [`src/pain.sh`](src/pain.sh) once when tmux loads the plugin. The script reads the options and the tmux version, then issues `bind-key` for each key. Nothing runs in the background afterwards.
-
-Each binding carries a `-N` note, so `prefix + ?` lists it with a description. On tmux older than 3.2 the version checks in the script still drop what that tmux lacks: full splits need 2.3, marks 2.1, pane names and edge no-wrap 2.6, the `{top-left}` promote target 3.0, and the scratch popup 3.2.
-
-With vim navigation on, each chord runs `ps` on the pane's TTY and matches the process name against `@pane_control_vim_pattern`. A match sends the key to vim; otherwise tmux selects the pane.
-
-The version and key helpers live in [`src/lib/pain/pain.sh`](src/lib/pain/pain.sh). Setting `PAIN_DRY_RUN` makes the script print each tmux command instead of running it, which is how the test suite checks the bindings.
-
-## Development
 
 | Command | What it does |
 |:--------|:-------------|
-| `make test` | Runs the bats suite |
-| `make lint` | Runs shellcheck on every shell file |
-| `make coverage` | Measures line coverage with kcov on Linux and fails below 95% |
+| `pain-control-revamped apply` | Binds every key now; the entry point runs it when tmux loads the plugin |
+| `pain-control-revamped list` | Prints every binding apply would make; `--json` prints one object |
+| `pain-control-revamped doctor` | One row per dependency |
+| `pain-control-revamped version` | The version, then the tmux version |
+| `pain-control-revamped help` | The help page; `man pain-control-revamped` documents the same commands and settings |
+| `pain-control-revamped` | On a terminal, a menu |
 
-Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+| tmux option | Default | Meaning |
+|:------------|:--------|:--------|
+| `@pain_control_revamped_resize` | `5` | Cells per resize step |
+| `@pain_control_revamped_new_window_path` | `true` | `c` opens the new window in the pane's folder |
+| `@pain_control_revamped_disabled_keys` | none | Keys to leave alone, separated by spaces or commas |
+| `@pain_control_revamped_no_wrap` | `off` | `on` stops pane navigation at the window's edge |
+| `@pain_control_revamped_vim_navigation` | `off` | `on` binds `C-h` to `C-l` and `C-\` without the prefix, sending them to vim when it runs in the pane |
+| `@pain_control_revamped_vim_pattern` | vim, nvim, view, fzf | The process names vim navigation treats as vim |
+| `@pain_control_revamped_pane_titles` | `off` | `on` shows each pane's index and title on its border |
+| `@pain_control_revamped_scratch_command` | a shell | What the scratch popup runs |
+
+Each key in the next section has its own option too, such as `@pain_control_revamped_join_key`. Every option is also a command option with dashes, such as `--join-key J`, and an environment variable, such as `PAIN_CONTROL_REVAMPED_JOIN_KEY`; the command line wins over the environment, and the environment over the tmux option. An empty tmux option means its default.
+
+The options were named `@pane_control_*`, `@pane_resize` and `@new_window_path` before 3.0.0, and those names no longer work.
+
+<a id="keys"></a>
+
+## Keys
+
+All of these follow the prefix. pain-control is a declared overrider in the tmux-revamped family, so they replace stock tmux keys by design.
+
+| Key | Action | Option |
+|:----|:-------|:-------|
+| `h` `j` `k` `l`, `C-h` `C-j` `C-k` `C-l` | Select the pane left, below, above or right | none |
+| `H` `J` `K` `L` | Resize the pane, repeatable | none |
+| `\|` and `%`, `-` and `"` | Split right or down in the current folder | none |
+| `\` and `_` | Split at full window width or height | none |
+| `*` | Split along the longer side | `_smart_split_key` |
+| `c` | New window in the current folder | `_new_window_path` |
+| `@` | Join a pane from another window | `_join_key` |
+| `!` | Break the pane into its own window | `_break_key` |
+| `{` `}` | Swap with the previous or next pane, repeatable | `_swap_prev_key`, `_swap_next_key` |
+| `+` | Promote the pane to the top-left slot | `_promote_key` |
+| `m`, `=` | Mark the pane, swap with the marked pane | `_mark_key`, `_swap_mark_key` |
+
+These have no key until their option sets one: `_sync_key` toggles synchronized panes, `_swap_window_left_key` and `_swap_window_right_key` move the window, `_move_window_key` moves it to a session, `_kill_window_key` kills it, `_layout_even_h_key`, `_layout_even_v_key` and `_layout_main_v_key` pick a layout, `_respawn_key` respawns the pane, `_capture_key` saves its scrollback, `_pane_name_key` names it, and `_scratch_key` opens a scratch popup.
+
+Version checks drop what an older tmux lacks: full splits need 2.3, marks 2.1, pane names and no-wrap 2.6, the `{top-left}` promote target 3.0, the scratch popup 3.2, and the notes 3.1.
+
+<a id="screens"></a>
+
+## Screens
+
+<details>
+<summary>Every screen, recorded inside a real tmux with <code>make screens</code>, with each key on the status line</summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" valign="top"><img src="screens/splits.png" alt="pain-control-revamped: Splits, navigation, resize, promote and smart split"><br><sub>Splits, navigation, resize, promote and smart split, from <code>hero.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/window.png" alt="pain-control-revamped: A new window in the current folder"><br><sub>A new window in the current folder, from <code>keys.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/break.png" alt="pain-control-revamped: A pane broken into its own window"><br><sub>A pane broken into its own window, from <code>keys.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/join.png" alt="pain-control-revamped: Joining a pane from another window"><br><sub>Joining a pane from another window, from <code>keys.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/mark.png" alt="pain-control-revamped: Mark a pane and swap with it"><br><sub>Mark a pane and swap with it, from <code>keys.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/swap.png" alt="pain-control-revamped: Swap with the previous and next pane"><br><sub>Swap with the previous and next pane, from <code>keys.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/titles.png" alt="pain-control-revamped: Pane titles on the borders"><br><sub>Pane titles on the borders, from <code>options.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/sync.png" alt="pain-control-revamped: Synchronized panes"><br><sub>Synchronized panes, from <code>options.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/vim-nowrap.png" alt="pain-control-revamped: Vim navigation and no-wrap"><br><sub>Vim navigation and no-wrap, from <code>options.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/scratch-popup.png" alt="pain-control-revamped: The scratch popup"><br><sub>The scratch popup, from <code>options.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/list.png" alt="pain-control-revamped: list"><br><sub><code>list</code>, from <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/json.png" alt="pain-control-revamped: list --json"><br><sub><code>list --json</code>, from <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/doctor.png" alt="pain-control-revamped: doctor"><br><sub><code>doctor</code>, from <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/menu.png" alt="pain-control-revamped: The menu"><br><sub>The menu, from <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/plain-menu.png" alt="pain-control-revamped: The menu without gum"><br><sub>The menu without gum, from <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/plain-apply.png" alt="pain-control-revamped: apply from the menu"><br><sub><code>apply</code> from the menu, from <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/version.png" alt="pain-control-revamped: The version"><br><sub>The version, from <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/error.png" alt="pain-control-revamped: An unknown command"><br><sub>An unknown command, from <code>stills.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/themes.png" alt="pain-control-revamped: The header in six themes"><br><sub>The header in six themes, from <code>themes.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/help.png" alt="pain-control-revamped: The help page"><br><sub>The help page, from <code>help.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/accent.png" alt="pain-control-revamped: An accent from PAIN_CONTROL_REVAMPED_ACCENT"><br><sub>An accent from <code>PAIN_CONTROL_REVAMPED_ACCENT</code>, from <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"></td></tr>
+</table>
+
+</details>
+
+## Portability
+
+The plugin is POSIX `sh`. CI runs every suite on each row below.
+
+| Shell | Status |
+|:------|:-------|
+| `dash`, `/bin/sh` on macOS | Supported |
+| `bash` 3.2 and 5.x, the system's `zsh` and Homebrew's | Supported |
+
+| System | Status |
+|:-------|:-------|
+| macOS | Tahoe on Apple Silicon and Intel, with the tools it ships, Homebrew's GNU tools and Homebrew's uutils |
+| Linux | Ubuntu 26.04 on x86_64 and arm64, with GNU coreutils, uutils and BusyBox |
+
+## Development
+
+| Command | What it runs |
+|:--------|:-------------|
+| `make fmt` | shfmt `-i 2` on every script |
+| `make lint` | shfmt, ShellCheck, mandoc, yamllint and actionlint, at zero findings |
+| `make test` | The bats suites under the system `sh` |
+| `make test-all` | The suites under every installed shell, both builds of bash and zsh on macOS |
+| `make test-linux` | The suites in an Ubuntu container |
+| `make coverage` | bashcov on this Mac and in the Ubuntu container, merged and gated at 100 percent |
+| `make screens` | The screens above, recorded from the real plugin inside tmux with VHS, on macOS |
+| `make install` | The command, its man page and completions under `PREFIX` |
+
+Commits follow the conventional commit format and go straight to `main`. After a green `ci` run on `main`, `release.yml` runs semantic-release: every `feat` or `fix` since the last tag publishes a release, stamps the version constant and adds the notes to [`CHANGELOG.md`](CHANGELOG.md).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE), copyright Gustavo Franco.
 
 <!-- family:begin -->
 

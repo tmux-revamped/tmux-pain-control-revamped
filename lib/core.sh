@@ -1,0 +1,7 @@
+#!/bin/sh
+# shellcheck disable=SC2034
+
+[ -n "${PAIN_CONTROL_REVAMPED_CORE_LOADED:-}" ] && return 0
+PAIN_CONTROL_REVAMPED_CORE_LOADED=1
+
+readonly PAIN_CONTROL_REVAMPED_VERSION="2.0.0"

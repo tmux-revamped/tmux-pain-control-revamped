@@ -1,0 +1,173 @@
+.TH PAIN-CONTROL-REVAMPED 1 "2026-11-16" "pain-control-revamped" "User Commands"
+.SH NAME
+pain-control-revamped \- pane and window keys for tmux
+.SH SYNOPSIS
+.B pain-control-revamped
+.RI [ options ]
+.B apply
+.br
+.B pain-control-revamped
+.RI [ options ]
+.B list
+.RB [ \-\-json ]
+.br
+.B pain-control-revamped doctor
+.br
+.B pain-control-revamped version
+.br
+.B pain-control-revamped help
+.SH DESCRIPTION
+.B pain-control-revamped
+binds keys for moving between panes, resizing them, splitting in the
+current folder, swapping, joining, breaking and promoting panes, and
+managing windows. Each key is checked against the tmux version, carries a
+note that
+.B prefix ?
+shows, and can be left alone. The entry point
+.B pain-control-revamped.tmux
+runs
+.B apply
+once when tmux loads the plugin, and every binding goes to tmux in one call.
+.PP
+Run with no command on a terminal, it offers a menu.
+.SH COMMANDS
+.TP
+.B apply
+Bind every key now.
+.TP
+.B list
+Print every binding apply would make, one per line.
+.TP
+.B doctor
+Print one row per dependency: tmux,
+.B ps
+for vim navigation, gum and the core tools. Exits 1 only when a required tool
+is missing.
+.TP
+.B version
+Print the version, then the tmux version.
+.TP
+.B help
+Print the help page.
+.SH OPTIONS
+.TP
+.B \-\-json
+.B list
+prints one JSON object.
+.TP
+.BI \-\-theme " name"
+Colours of the terminal interface:
+.BR kodougu ,
+.BR catppuccin\-mocha ,
+.BR catppuccin\-latte ,
+.BR dracula ,
+.BR nord ,
+.BR gruvbox ,
+.B tokyo\-night
+or
+.BR mono .
+The default is
+.BR kodougu .
+.TP
+.BI \-\- setting " value"
+Any tmux option under TMUX OPTIONS, named with dashes, such as
+.B \-\-resize 3
+or
+.BR "\-\-join\-key J" .
+.PP
+Each option also takes the form
+.IR \-\-name = value ,
+and
+.B \-\-
+ends the options.
+.SH ENVIRONMENT
+.TP
+.BI PAIN_CONTROL_REVAMPED_ SETTING
+Any tmux option under TMUX OPTIONS in capitals, such as
+.BR PAIN_CONTROL_REVAMPED_RESIZE .
+An option wins over the environment, and the environment over the tmux
+option; an empty value leaves the key unbound.
+.TP
+.B PAIN_CONTROL_REVAMPED_THEME
+The theme when
+.B \-\-theme
+is not given.
+.TP
+.B PAIN_CONTROL_REVAMPED_ACCENT
+A colour such as #CBA6F7 that replaces the accent of the theme.
+.TP
+.B KODOUGU_THEME
+The theme of every kodougu and tmux-revamped tool, when neither
+.B \-\-theme
+nor
+.B PAIN_CONTROL_REVAMPED_THEME
+is set.
+.TP
+.B KODOUGU_ACCENT
+The accent of every kodougu and tmux-revamped tool, when
+.B PAIN_CONTROL_REVAMPED_ACCENT
+is not set.
+.TP
+.B NO_COLOR
+Turns colour off in every theme.
+.SH TMUX OPTIONS
+An empty tmux option means its default.
+.TP
+.B @pain_control_revamped_resize
+Cells per resize step. The default is 5.
+.TP
+.B @pain_control_revamped_new_window_path
+.B true
+makes
+.B c
+open the new window in the pane's folder. The default is
+.BR true .
+.TP
+.B @pain_control_revamped_disabled_keys
+Keys to leave alone, separated by spaces or commas.
+.TP
+.B @pain_control_revamped_no_wrap
+.B on
+stops pane navigation at the window's edge. The default is
+.BR off .
+.TP
+.B @pain_control_revamped_vim_navigation
+.B on
+binds C-h to C-l and C-\e without the prefix, sending them to vim when it runs
+in the pane. The default is
+.BR off .
+.TP
+.B @pain_control_revamped_vim_pattern
+The process names vim navigation treats as vim.
+.TP
+.B @pain_control_revamped_pane_titles
+.B on
+shows each pane's index and title on its border. The default is
+.BR off .
+.TP
+.BR @pain_control_revamped_smart_split_key ", " _join_key ", " _break_key ", " _swap_prev_key ", " _swap_next_key ", " _promote_key ", " _mark_key ", " _swap_mark_key
+Keys bound by default:
+.BR * ,
+.BR @ ,
+.BR ! ,
+.BR { ,
+.BR } ,
+.BR + ,
+.B m
+and
+.BR = .
+.TP
+.BR @pain_control_revamped_sync_key ", " _swap_window_left_key ", " _swap_window_right_key ", " _move_window_key ", " _kill_window_key ", " _layout_even_h_key ", " _layout_even_v_key ", " _layout_main_v_key ", " _respawn_key ", " _capture_key ", " _pane_name_key ", " _scratch_key
+Keys left unbound until set.
+.TP
+.B @pain_control_revamped_scratch_command
+The command the scratch popup runs. The default is a shell.
+.TP
+.B @revamped_theme
+The theme of every tmux-revamped tool, when nothing else sets one. The default
+is
+.BR kodougu .
+.SH EXIT STATUS
+0 on success, 1 on any failure.
+.SH SEE ALSO
+.BR tmux (1)

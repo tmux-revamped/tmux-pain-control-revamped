@@ -1,0 +1,51 @@
+#compdef pain-control-revamped
+
+_pain_control_revamped() {
+  local -a commands
+  commands=(
+    'apply:bind every key now'
+    'list:print every binding apply would make'
+    'doctor:check this machine'
+    'version:print the version'
+    'help:print the help page'
+  )
+
+  _arguments \
+    '--json[list prints one JSON object]' \
+    '--theme[colours of the terminal interface]:theme:(kodougu catppuccin-mocha catppuccin-latte dracula nord gruvbox tokyo-night mono)' \
+    '--resize[the resize setting]:value:' \
+    '--new-window-path[the new_window_path setting]:value:' \
+    '--disabled-keys[the disabled_keys setting]:value:' \
+    '--no-wrap[the no_wrap setting]:value:' \
+    '--vim-navigation[the vim_navigation setting]:value:' \
+    '--vim-pattern[the vim_pattern setting]:value:' \
+    '--pane-titles[the pane_titles setting]:value:' \
+    '--sync-key[the sync_key setting]:value:' \
+    '--smart-split-key[the smart_split_key setting]:value:' \
+    '--swap-window-left-key[the swap_window_left_key setting]:value:' \
+    '--swap-window-right-key[the swap_window_right_key setting]:value:' \
+    '--move-window-key[the move_window_key setting]:value:' \
+    '--kill-window-key[the kill_window_key setting]:value:' \
+    '--join-key[the join_key setting]:value:' \
+    '--break-key[the break_key setting]:value:' \
+    '--swap-prev-key[the swap_prev_key setting]:value:' \
+    '--swap-next-key[the swap_next_key setting]:value:' \
+    '--promote-key[the promote_key setting]:value:' \
+    '--mark-key[the mark_key setting]:value:' \
+    '--swap-mark-key[the swap_mark_key setting]:value:' \
+    '--layout-even-h-key[the layout_even_h_key setting]:value:' \
+    '--layout-even-v-key[the layout_even_v_key setting]:value:' \
+    '--layout-main-v-key[the layout_main_v_key setting]:value:' \
+    '--respawn-key[the respawn_key setting]:value:' \
+    '--capture-key[the capture_key setting]:value:' \
+    '--pane-name-key[the pane_name_key setting]:value:' \
+    '--scratch-key[the scratch_key setting]:value:' \
+    '--scratch-command[the scratch_command setting]:value:' \
+    '1:command:->command'
+
+  if [[ "${state}" == command ]]; then
+    _describe 'command' commands
+  fi
+}
+
+_pain_control_revamped "$@"

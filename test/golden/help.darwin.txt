@@ -1,0 +1,70 @@
+$ pain-control-revamped help
+pain-control-revamped - pane and window keys for tmux
+
+usage:
+  pain-control-revamped apply     bind every key now
+  pain-control-revamped list      print every binding apply would make
+  pain-control-revamped doctor    check this machine
+  pain-control-revamped version   print the version
+  pain-control-revamped help      print this page
+
+options:
+  --json           list prints one JSON object
+  --theme NAME     the look: kodougu, catppuccin-mocha, catppuccin-latte,
+                   dracula, nord, gruvbox, tokyo-night or mono
+  --SETTING VALUE  any tmux option below, named with dashes, such as
+                   --resize 3 or --join-key J
+
+environment:
+  PAIN_CONTROL_REVAMPED_SETTING  any tmux option below in capitals, such as
+                                 PAIN_CONTROL_REVAMPED_RESIZE
+  PAIN_CONTROL_REVAMPED_THEME    the look, when --theme is not given
+  PAIN_CONTROL_REVAMPED_ACCENT   a colour such as #CBA6F7 for the accent
+  KODOUGU_THEME                  the family look, when neither is given
+  KODOUGU_ACCENT                 the family accent, when the tool's is unset
+  NO_COLOR                       turn colour off
+
+tmux options:
+  @pain_control_revamped_resize                cells per resize (default 5)
+  @pain_control_revamped_new_window_path       true opens c in the pane's
+                                               folder (default true)
+  @pain_control_revamped_disabled_keys         keys to leave alone, such as
+                                               "| -"
+  @pain_control_revamped_no_wrap               on stops at the edge (off)
+  @pain_control_revamped_vim_navigation        on sends C-h to C-l to vim (off)
+  @pain_control_revamped_vim_pattern           the process names vim
+                                               navigation matches
+  @pain_control_revamped_pane_titles           on shows titles on borders (off)
+  @pain_control_revamped_smart_split_key       split the longer side (*)
+  @pain_control_revamped_join_key              join a pane (@)
+  @pain_control_revamped_break_key             break the pane out (!)
+  @pain_control_revamped_swap_prev_key         swap pane up ({)
+  @pain_control_revamped_swap_next_key         swap pane down (})
+  @pain_control_revamped_promote_key           promote to main (+)
+  @pain_control_revamped_mark_key              mark the pane (m)
+  @pain_control_revamped_swap_mark_key         swap with the mark (=)
+  @pain_control_revamped_sync_key              toggle pane sync (unbound)
+  @pain_control_revamped_swap_window_left_key  swap window left (unbound)
+  @pain_control_revamped_swap_window_right_key swap window right (unbound)
+  @pain_control_revamped_move_window_key       move to a session (unbound)
+  @pain_control_revamped_kill_window_key       kill the window (unbound)
+  @pain_control_revamped_layout_even_h_key     even-horizontal (unbound)
+  @pain_control_revamped_layout_even_v_key     even-vertical (unbound)
+  @pain_control_revamped_layout_main_v_key     main-vertical (unbound)
+  @pain_control_revamped_respawn_key           respawn the pane (unbound)
+  @pain_control_revamped_capture_key           save the scrollback (unbound)
+  @pain_control_revamped_pane_name_key         name the pane (unbound)
+  @pain_control_revamped_scratch_key           scratch popup (unbound)
+  @pain_control_revamped_scratch_command       the popup's command (a shell)
+  @revamped_theme                              the family look (kodougu)
+
+notes:
+  The entry point runs apply once when tmux loads the plugin, and every
+  binding goes to tmux in one call. Each key is checked against the tmux
+  version, and every binding carries a note that prefix ? shows.
+
+examples:
+  pain-control-revamped list
+  pain-control-revamped --disabled-keys '| -' apply
+  pain-control-revamped doctor
+exit 0
