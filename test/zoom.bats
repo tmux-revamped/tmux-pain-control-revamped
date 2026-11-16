@@ -130,10 +130,11 @@ panes() {
 
 @test "zoom - the bound key zooms from a checkout path with a space, a hash and a quote" {
   # Arrange
-  local copy="${BATS_TEST_TMPDIR}/it's #1 dir" binding
+  local copy="${BATS_TEST_TMPDIR}/it's #1 dir" listing binding
   mkdir -p "${copy}"
   cp -Rf "${ROOT}/bin" "${ROOT}/lib" "${copy}/"
-  binding=$(PAIN_CONTROL_REVAMPED_ZOOM_KEY=Z sh "${copy}/bin/pain-control-revamped" list | grep 'Power zoom')
+  listing=$(PAIN_CONTROL_REVAMPED_ZOOM_KEY=Z sh "${copy}/bin/pain-control-revamped" list)
+  binding=$(grep 'Power zoom' <<<"${listing}")
 
   # Act
   tmux run-shell -t %0 "${binding#*run-shell }"
