@@ -272,6 +272,8 @@ plan_at() {
   [[ "${output}" == "1" ]]
   run grep -c '|;|bind-key|' "${REVAMPED_TEST_TMUX_ARGV}"
   [[ "${output}" == "1" ]]
+  run grep -c '|;$' "${REVAMPED_TEST_TMUX_ARGV}"
+  [[ "${output}" == "0" ]]
 }
 
 @test "pain - apply calls tmux for nothing when every key is disabled" {

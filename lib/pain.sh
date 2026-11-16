@@ -306,12 +306,15 @@ pain_control_revamped_plan() {
 pain_control_revamped_apply() {
   pain_control_revamped_plan
   set --
+  pain_control_revamped_apply_sep=""
   while IFS= read -r pain_control_revamped_apply_line; do
-    if [ -n "${pain_control_revamped_apply_line}" ]; then
-      set -- "$@" "${pain_control_revamped_apply_line}"
-    elif [ "$#" -gt 0 ]; then
-      set -- "$@" ";"
+    if [ -z "${pain_control_revamped_apply_line}" ]; then
+      [ "$#" -eq 0 ] || pain_control_revamped_apply_sep=";"
+      continue
     fi
+    [ -z "${pain_control_revamped_apply_sep}" ] || set -- "$@" "${pain_control_revamped_apply_sep}"
+    pain_control_revamped_apply_sep=""
+    set -- "$@" "${pain_control_revamped_apply_line}"
   done <<PLAN
 ${PAIN_CONTROL_REVAMPED_PLAN}
 PLAN
