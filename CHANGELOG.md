@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.0...v3.1.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* bind the other keys when one key is invalid ([f4d180b](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/f4d180bb1956e9576fb54381feb5a7eac7388166))
+
 # [3.1.0](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.0.0...v3.1.0) (2026-11-16)
 
 
