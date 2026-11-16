@@ -20,6 +20,12 @@ plan_at() {
   lib_run pain 'pain_control_revamped_plan; pain_control_revamped_lines'
 }
 
+refuse() {
+  mkdir -p "${BATS_TEST_TMPDIR}/stubs"
+  printf '#!/bin/sh\nfor a in "$@"; do [ "$a" != ";" ] || exit 1; [ "$a" != BAD ] || { printf "unknown key: BAD\\n" >&2; exit 1; }; done\nexec "%s/bin/tmux" "$@"\n' "${REVAMPED_TESTS_DIR}" >"${BATS_TEST_TMPDIR}/stubs/tmux"
+  chmod +x "${BATS_TEST_TMPDIR}/stubs/tmux"
+}
+
 @test "pain - the version is read from tmux -V, next and rc builds included" {
   # Arrange
   local script='for v in "tmux 3.6" "tmux next-3.7" "tmux 3.5a" "tmux master"; do printf "[%s]\n" "$(pain_control_revamped_parse_version "${v}")"; done'
@@ -332,4 +338,22 @@ plan_at() {
 
   # Assert
   [[ "${output}" == "[join_key][smart_split_key][]" ]]
+}
+
+@test "pain - the keys around a bad one are still bound" {
+  # Arrange
+  refuse
+  option join_key BAD
+  export REVAMPED_TEST_TMUX_ARGV="${BATS_TEST_TMPDIR}/argv"
+
+  # Act
+  lib_run pain pain_control_revamped_apply
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"unknown key: BAD"* ]]
+  run grep -c '|;|' "${REVAMPED_TEST_TMUX_ARGV}"
+  [[ "${output}" == "0" ]]
+  run grep -c '^bind-key\|^set-option' "${REVAMPED_TEST_TMUX_ARGV}"
+  [[ "${output}" -ge 1 ]]
 }

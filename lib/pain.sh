@@ -319,7 +319,25 @@ pain_control_revamped_apply() {
 ${PAIN_CONTROL_REVAMPED_PLAN}
 PLAN
   [ "$#" -gt 0 ] || return 0
-  tmux "$@"
+  tmux "$@" 2>/dev/null && return 0
+  pain_control_revamped_apply_each
+}
+
+pain_control_revamped_apply_each() {
+  pain_control_revamped_apply_each_status=0
+  set --
+  while IFS= read -r pain_control_revamped_apply_each_line; do
+    if [ -n "${pain_control_revamped_apply_each_line}" ]; then
+      set -- "$@" "${pain_control_revamped_apply_each_line}"
+      continue
+    fi
+    [ "$#" -gt 0 ] || continue
+    tmux "$@" || pain_control_revamped_apply_each_status=1
+    set --
+  done <<PLAN
+${PAIN_CONTROL_REVAMPED_PLAN}
+PLAN
+  return "${pain_control_revamped_apply_each_status}"
 }
 
 pain_control_revamped_lines() {
