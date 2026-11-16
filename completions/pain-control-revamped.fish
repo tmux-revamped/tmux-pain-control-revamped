@@ -1,6 +1,7 @@
 complete -c pain-control-revamped -f
 complete -c pain-control-revamped -n __fish_use_subcommand -a apply -d 'bind every key now'
 complete -c pain-control-revamped -n __fish_use_subcommand -a list -d 'print every binding apply would make'
+complete -c pain-control-revamped -n __fish_use_subcommand -a zoom -d 'move the pane to its own window, or back'
 complete -c pain-control-revamped -n __fish_use_subcommand -a doctor -d 'check this machine'
 complete -c pain-control-revamped -n __fish_use_subcommand -a version -d 'print the version'
 complete -c pain-control-revamped -n __fish_use_subcommand -a help -d 'print the help page'
@@ -34,3 +35,5 @@ complete -c pain-control-revamped -l capture-key -r -d 'the capture_key setting'
 complete -c pain-control-revamped -l pane-name-key -r -d 'the pane_name_key setting'
 complete -c pain-control-revamped -l scratch-key -r -d 'the scratch_key setting'
 complete -c pain-control-revamped -l scratch-command -r -d 'the scratch_command setting'
+complete -c pain-control-revamped -l zoom-key -r -d 'the zoom_key setting'
+complete -c pain-control-revamped -l focus-size -r -d 'the focus_size setting'

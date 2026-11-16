@@ -152,7 +152,7 @@ plan_at() {
   plan_at 3.6
 
   # Assert
-  [[ "${output}" == *"bind-key -n C-h if-shell ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+/)?g?\\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?\$' send-keys C-h select-pane -L"* ]]
+  [[ "${output}" == *"bind-key -n C-h if-shell [ -n '#{?@pane-is-vim,1,}' ] || ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+/)?g?\\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?\$' send-keys C-h select-pane -L"* ]]
   [[ "${output}" == *"bind-key -n C-\\ if-shell"*"send-keys C-\\\\ select-pane -l"* ]]
   [[ "${output}" == *"bind-key -T copy-mode-vi C-l select-pane -R"* ]]
   [[ "${output}" == *"bind-key -N Clear screen C-l send-keys C-l"* ]]
@@ -198,6 +198,66 @@ plan_at() {
   [[ "${output}" == *"Even-vertical layout V select-layout even-vertical"* ]]
   [[ "${output}" == *"Capture scrollback to file P command-prompt"* ]]
   [[ "${output}" != *"New window here"* ]]
+}
+
+@test "pain - the zoom key runs the zoom command for the pane it was pressed in" {
+  # Arrange
+  option zoom_key Z
+
+  # Act
+  plan_at 3.6
+
+  # Assert
+  [[ "${output}" == *"bind-key -N Power zoom Z run-shell TMUX_PANE=#{pane_id} '"*"/bin/pain-control-revamped' zoom"* ]]
+}
+
+@test "pain - the zoom key needs tmux 3.0" {
+  # Arrange
+  option zoom_key Z
+
+  # Act
+  plan_at 2.9
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" != *"zoom"* ]]
+}
+
+@test "pain - a focus size grows the focused pane after every select and split" {
+  # Arrange
+  option focus_size 65
+
+  # Act
+  plan_at 3.1
+
+  # Assert
+  [[ "${lines[${#lines[@]} - 2]}" == "set-hook -g after-select-pane[37] if-shell -F '#{?window_zoomed_flag,,1}' 'resize-pane -x 65% -y 65%'" ]]
+  [[ "${lines[${#lines[@]} - 1]}" == "set-hook -g after-split-window[37] if-shell -F '#{?window_zoomed_flag,,1}' 'resize-pane -x 65% -y 65%'" ]]
+}
+
+@test "pain - a focus size needs tmux 3.1" {
+  # Arrange
+  option focus_size 65
+
+  # Act
+  plan_at 3.0
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" != *"set-hook"* ]]
+}
+
+@test "pain - a focus size outside 50 to 99 is a bad value" {
+  # Arrange
+  option focus_size 40
+  export REVAMPED_TEST_TMUX_VERSION=3.6
+
+  # Act
+  lib_run pain pain_control_revamped_plan
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"pain-control-revamped: --focus-size must be a whole number from 50 to 99, got: 40" ]]
 }
 
 @test "pain - apply sends every binding to tmux in one call" {

@@ -5,6 +5,7 @@ _pain_control_revamped() {
   commands=(
     'apply:bind every key now'
     'list:print every binding apply would make'
+    'zoom:move the pane to its own window, or back'
     'doctor:check this machine'
     'version:print the version'
     'help:print the help page'
@@ -41,6 +42,8 @@ _pain_control_revamped() {
     '--pane-name-key[the pane_name_key setting]:value:' \
     '--scratch-key[the scratch_key setting]:value:' \
     '--scratch-command[the scratch_command setting]:value:' \
+    '--zoom-key[the zoom_key setting]:value:' \
+    '--focus-size[the focus_size setting]:value:' \
     '1:command:->command'
 
   if [[ "${state}" == command ]]; then

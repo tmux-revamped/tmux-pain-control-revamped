@@ -76,6 +76,7 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 |:--------|:-------------|
 | `pain-control-revamped apply` | Binds every key now; the entry point runs it when tmux loads the plugin |
 | `pain-control-revamped list` | Prints every binding apply would make; `--json` prints one object |
+| `pain-control-revamped zoom` | Moves the pane to a window of its own, leaving a placeholder in its place; run again in either, it puts the pane back |
 | `pain-control-revamped doctor` | One row per dependency |
 | `pain-control-revamped version` | The version, then the tmux version |
 | `pain-control-revamped help` | The help page; `man pain-control-revamped` documents the same commands and settings |
@@ -87,10 +88,12 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pain_control_revamped_new_window_path` | `true` | `c` opens the new window in the pane's folder |
 | `@pain_control_revamped_disabled_keys` | none | Keys to leave alone, separated by spaces or commas |
 | `@pain_control_revamped_no_wrap` | `off` | `on` stops pane navigation at the window's edge |
-| `@pain_control_revamped_vim_navigation` | `off` | `on` binds `C-h` to `C-l` and `C-\` without the prefix, sending them to vim when it runs in the pane |
+| `@pain_control_revamped_vim_navigation` | `off` | `on` binds `C-h` to `C-l` and `C-\` without the prefix, sending them to vim when it runs in the pane, or to any pane whose `@pane-is-vim` option is set, as [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) sets it |
 | `@pain_control_revamped_vim_pattern` | vim, nvim, view, fzf | The process names vim navigation treats as vim |
 | `@pain_control_revamped_pane_titles` | `off` | `on` shows each pane's index and title on its border |
 | `@pain_control_revamped_scratch_command` | a shell | What the scratch popup runs |
+| `@pain_control_revamped_zoom_key` | none | The key that runs `zoom` |
+| `@pain_control_revamped_focus_size` | none | A whole number from 50 to 99: the percent of the window's width and height the focused pane grows to after each pane selection and split. Unsetting it takes effect when the tmux server restarts |
 
 Each key in the next section has its own option too, such as `@pain_control_revamped_join_key`. Every option is also a command option with dashes, such as `--join-key J`, and an environment variable, such as `PAIN_CONTROL_REVAMPED_JOIN_KEY`; the command line wins over the environment, and the environment over the tmux option. An empty tmux option means its default.
 
@@ -116,9 +119,9 @@ All of these follow the prefix. pain-control is a declared overrider in the tmux
 | `+` | Promote the pane to the top-left slot | `_promote_key` |
 | `m`, `=` | Mark the pane, swap with the marked pane | `_mark_key`, `_swap_mark_key` |
 
-These have no key until their option sets one: `_sync_key` toggles synchronized panes, `_swap_window_left_key` and `_swap_window_right_key` move the window, `_move_window_key` moves it to a session, `_kill_window_key` kills it, `_layout_even_h_key`, `_layout_even_v_key` and `_layout_main_v_key` pick a layout, `_respawn_key` respawns the pane, `_capture_key` saves its scrollback, `_pane_name_key` names it, and `_scratch_key` opens a scratch popup.
+These have no key until their option sets one: `_sync_key` toggles synchronized panes, `_swap_window_left_key` and `_swap_window_right_key` move the window, `_move_window_key` moves it to a session, `_kill_window_key` kills it, `_layout_even_h_key`, `_layout_even_v_key` and `_layout_main_v_key` pick a layout, `_respawn_key` respawns the pane, `_capture_key` saves its scrollback, `_pane_name_key` names it, `_scratch_key` opens a scratch popup, and `_zoom_key` runs power zoom.
 
-Version checks drop what an older tmux lacks: full splits need 2.3, marks 2.1, pane names and no-wrap 2.6, the `{top-left}` promote target 3.0, the scratch popup 3.2, and the notes 3.1.
+Version checks drop what an older tmux lacks: full splits need 2.3, marks 2.1, pane names and no-wrap 2.6, the `{top-left}` promote target 3.0, the scratch popup 3.2, power zoom 3.0, focus size 3.1, and the notes 3.1.
 
 <a id="screens"></a>
 
@@ -171,6 +174,14 @@ Version checks drop what an older tmux lacks: full splits need 2.3, marks 2.1, p
 </tr>
 <tr>
 <td width="50%" valign="top"><img src="screens/accent.png" alt="pain-control-revamped: An accent from PAIN_CONTROL_REVAMPED_ACCENT"><br><sub>An accent from <code>PAIN_CONTROL_REVAMPED_ACCENT</code>, from <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/zoom.png" alt="pain-control-revamped: The zoomed pane in its own window, with a pane opened beside it"><br><sub>The zoomed pane in its own window, with a pane opened beside it, from <code>zoom.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/zoom-placeholder.png" alt="pain-control-revamped: The placeholder holding the pane's place"><br><sub>The placeholder holding the pane's place, from <code>zoom.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/zoom-back.png" alt="pain-control-revamped: The pane back in its place"><br><sub>The pane back in its place, from <code>zoom.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/focus.png" alt="pain-control-revamped: The focused pane grown to 70 percent"><br><sub>The focused pane grown to 70 percent, from <code>zoom.tape</code></sub></td>
 <td width="50%" valign="top"></td></tr>
 </table>
 

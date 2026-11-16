@@ -46,6 +46,7 @@ pain-control-revamped - pane and window keys for tmux
 usage:
   pain-control-revamped apply     bind every key now
   pain-control-revamped list      print every binding apply would make
+  pain-control-revamped zoom      move the pane to its own window, or back
   pain-control-revamped doctor    check this machine
   pain-control-revamped version   print the version
   pain-control-revamped help      print this page
@@ -73,7 +74,9 @@ tmux options:
   @pain_control_revamped_disabled_keys         keys to leave alone, such as
                                                "| -"
   @pain_control_revamped_no_wrap               on stops at the edge (off)
-  @pain_control_revamped_vim_navigation        on sends C-h to C-l to vim (off)
+  @pain_control_revamped_vim_navigation        on sends C-h to C-l to vim,
+                                               or to any pane that sets
+                                               @pane-is-vim (off)
   @pain_control_revamped_vim_pattern           the process names vim
                                                navigation matches
   @pain_control_revamped_pane_titles           on shows titles on borders (off)
@@ -98,6 +101,9 @@ tmux options:
   @pain_control_revamped_pane_name_key         name the pane (unbound)
   @pain_control_revamped_scratch_key           scratch popup (unbound)
   @pain_control_revamped_scratch_command       the popup's command (a shell)
+  @pain_control_revamped_zoom_key              power zoom (unbound)
+  @pain_control_revamped_focus_size            percent the focused pane
+                                               grows to, 50 to 99 (off)
   @revamped_theme                              the family look (kodougu)
 
 notes:
@@ -227,6 +233,7 @@ pain_control_revamped_run() {
   [ -z "${pain_control_revamped_json}" ] || [ "${1:-}" = list ] || pain_control_revamped_usage "option '--json' works only with list"
   case "${1:-}" in
   apply) pain_control_revamped_apply ;;
+  zoom) pain_control_revamped_zoom ;;
   *)
     pain_control_revamped_interface
     revamped_cli_start "${pain_control_revamped_run_theme}"

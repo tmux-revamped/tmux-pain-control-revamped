@@ -76,6 +76,7 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 |:--------|:-------------|
 | `pain-control-revamped apply` | 立即绑定所有按键；tmux 加载插件时入口文件会运行它 |
 | `pain-control-revamped list` | 打印 apply 会做的每个绑定；`--json` 输出一个对象 |
+| `pain-control-revamped zoom` | 把窗格移到它自己的窗口，在原位留下占位窗格；在任意一处再次运行，就把窗格放回原位 |
 | `pain-control-revamped doctor` | 每个依赖一行 |
 | `pain-control-revamped version` | 版本号，然后是 tmux 的版本 |
 | `pain-control-revamped help` | 帮助页面。`man pain-control-revamped` 说明同样的命令和设置 |
@@ -87,10 +88,12 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pain_control_revamped_new_window_path` | `true` | `c` 在窗格所在的文件夹打开新窗口 |
 | `@pain_control_revamped_disabled_keys` | 无 | 不绑定的按键，用空格或逗号分隔 |
 | `@pain_control_revamped_no_wrap` | `off` | `on` 让窗格切换停在窗口边缘 |
-| `@pain_control_revamped_vim_navigation` | `off` | `on` 不经 prefix 绑定 `C-h` 到 `C-l` 和 `C-\`，窗格中运行 vim 时把按键交给 vim |
+| `@pain_control_revamped_vim_navigation` | `off` | `on` 不经 prefix 绑定 `C-h` 到 `C-l` 和 `C-\`，窗格中运行 vim 时，或窗格像 [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) 那样设置了 `@pane-is-vim` 选项时，把按键交给 vim |
 | `@pain_control_revamped_vim_pattern` | vim、nvim、view、fzf | vim 导航视为 vim 的进程名 |
 | `@pain_control_revamped_pane_titles` | `off` | `on` 在边框上显示每个窗格的编号和标题 |
 | `@pain_control_revamped_scratch_command` | 一个 shell | 临时弹窗运行的内容 |
+| `@pain_control_revamped_zoom_key` | 无 | 运行 `zoom` 的按键 |
+| `@pain_control_revamped_focus_size` | 无 | 50 到 99 的整数：每次选择或分割窗格后，获得焦点的窗格扩大到窗口宽度和高度的这个百分比。取消设置要等 tmux 服务器重启后才生效 |
 
 下一节的每个按键也都有自己的选项，例如 `@pain_control_revamped_join_key`。每个选项也都是用连字符命名的命令选项，例如 `--join-key J`，以及一个环境变量，例如 `PAIN_CONTROL_REVAMPED_JOIN_KEY`；命令行优先于环境变量，环境变量优先于 tmux 选项。空的 tmux 选项表示默认值。
 
@@ -116,9 +119,9 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `+` | 把窗格提升到左上位置 | `_promote_key` |
 | `m`、`=` | 标记窗格，与标记的窗格交换 | `_mark_key`、`_swap_mark_key` |
 
-下面这些在选项设置之前没有按键：`_sync_key` 切换窗格同步，`_swap_window_left_key` 和 `_swap_window_right_key` 移动窗口，`_move_window_key` 把窗口移到另一个会话，`_kill_window_key` 关闭窗口，`_layout_even_h_key`、`_layout_even_v_key` 和 `_layout_main_v_key` 选择布局，`_respawn_key` 重启窗格，`_capture_key` 保存回滚内容，`_pane_name_key` 给窗格命名，`_scratch_key` 打开临时弹窗。
+下面这些在选项设置之前没有按键：`_sync_key` 切换窗格同步，`_swap_window_left_key` 和 `_swap_window_right_key` 移动窗口，`_move_window_key` 把窗口移到另一个会话，`_kill_window_key` 关闭窗口，`_layout_even_h_key`、`_layout_even_v_key` 和 `_layout_main_v_key` 选择布局，`_respawn_key` 重启窗格，`_capture_key` 保存回滚内容，`_pane_name_key` 给窗格命名，`_scratch_key` 打开临时弹窗，`_zoom_key` 运行强力缩放。
 
-版本检查会去掉旧版 tmux 不支持的功能：全宽分割需要 2.3，标记需要 2.1，窗格名称和边缘停止需要 2.6，`{top-left}` 提升需要 3.0，临时弹窗需要 3.2，说明需要 3.1。
+版本检查会去掉旧版 tmux 不支持的功能：全宽分割需要 2.3，标记需要 2.1，窗格名称和边缘停止需要 2.6，`{top-left}` 提升需要 3.0，临时弹窗需要 3.2，强力缩放需要 3.0，焦点大小需要 3.1，说明需要 3.1。
 
 <a id="界面"></a>
 
@@ -171,6 +174,14 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 </tr>
 <tr>
 <td width="50%" valign="top"><img src="screens/accent.png" alt="pain-control-revamped：来自 PAIN_CONTROL_REVAMPED_ACCENT 的强调色"><br><sub>来自 <code>PAIN_CONTROL_REVAMPED_ACCENT</code> 的强调色，来自 <code>stills.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/zoom.png" alt="pain-control-revamped：移到自己窗口的窗格，旁边开了另一个窗格"><br><sub>移到自己窗口的窗格，旁边开了另一个窗格，来自 <code>zoom.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/zoom-placeholder.png" alt="pain-control-revamped：守住窗格原位的占位窗格"><br><sub>守住窗格原位的占位窗格，来自 <code>zoom.tape</code></sub></td>
+<td width="50%" valign="top"><img src="screens/zoom-back.png" alt="pain-control-revamped：回到原位的窗格"><br><sub>回到原位的窗格，来自 <code>zoom.tape</code></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/focus.png" alt="pain-control-revamped：扩大到 70% 的焦点窗格"><br><sub>扩大到 70% 的焦点窗格，来自 <code>zoom.tape</code></sub></td>
 <td width="50%" valign="top"></td></tr>
 </table>
 

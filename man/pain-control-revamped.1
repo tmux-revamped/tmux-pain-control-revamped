@@ -38,6 +38,12 @@ Bind every key now.
 .B list
 Print every binding apply would make, one per line.
 .TP
+.B zoom
+Move the active pane to a window of its own and leave a placeholder where it
+was. Run again in the zoomed pane or in the placeholder, it puts the pane back
+in its place, and any panes opened beside it stay in the zoom window. Needs
+tmux 3.0.
+.TP
 .B doctor
 Print one row per dependency: tmux,
 .B ps
@@ -134,7 +140,9 @@ stops pane navigation at the window's edge. The default is
 .B @pain_control_revamped_vim_navigation
 .B on
 binds C-h to C-l and C-\e without the prefix, sending them to vim when it runs
-in the pane. The default is
+in the pane, or to any pane whose
+.B @pane-is-vim
+option is set, as smart-splits.nvim sets it. The default is
 .BR off .
 .TP
 .B @pain_control_revamped_vim_pattern
@@ -162,6 +170,17 @@ Keys left unbound until set.
 .TP
 .B @pain_control_revamped_scratch_command
 The command the scratch popup runs. The default is a shell.
+.TP
+.B @pain_control_revamped_zoom_key
+The key that runs
+.BR zoom .
+Unbound until set.
+.TP
+.B @pain_control_revamped_focus_size
+A whole number from 50 to 99: the percent of the window's width and height
+the focused pane grows to after every pane selection and split, on tmux 3.1
+and later. Unset, panes keep their size. Unsetting it takes effect when the
+tmux server restarts.
 .TP
 .B @revamped_theme
 The theme of every tmux-revamped tool, when nothing else sets one. The default

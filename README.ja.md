@@ -76,6 +76,7 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 |:--------|:-------------|
 | `pain-control-revamped apply` | すべてのキーをいま割り当てます。tmux がプラグインを読み込むとエントリーポイントがこれを実行します |
 | `pain-control-revamped list` | apply が行う割り当てをすべて表示します。`--json` で 1 つのオブジェクトを出力します |
+| `pain-control-revamped zoom` | ペインを専用のウィンドウへ移し、元の場所にプレースホルダーを残します。どちらかでもう一度実行すると元に戻します |
 | `pain-control-revamped doctor` | 依存するツールごとに 1 行 |
 | `pain-control-revamped version` | バージョンと、tmux のバージョン |
 | `pain-control-revamped help` | ヘルプページ。`man pain-control-revamped` も同じコマンドと設定を説明します |
@@ -87,10 +88,12 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pain_control_revamped_new_window_path` | `true` | `c` で開く新しいウィンドウをペインのフォルダーで開きます |
 | `@pain_control_revamped_disabled_keys` | なし | 割り当てないキー。空白かカンマで区切ります |
 | `@pain_control_revamped_no_wrap` | `off` | `on` でペインの移動をウィンドウの端で止めます |
-| `@pain_control_revamped_vim_navigation` | `off` | `on` で prefix なしの `C-h` から `C-l` と `C-\` を割り当て、ペインで vim が動いていれば vim に送ります |
+| `@pain_control_revamped_vim_navigation` | `off` | `on` で prefix なしの `C-h` から `C-l` と `C-\` を割り当て、ペインで vim が動いているか、[smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) のようにペインの `@pane-is-vim` オプションが設定されていれば vim に送ります |
 | `@pain_control_revamped_vim_pattern` | vim、nvim、view、fzf | vim ナビゲーションが vim とみなすプロセス名 |
 | `@pain_control_revamped_pane_titles` | `off` | `on` で各ペインの番号とタイトルを枠に表示します |
 | `@pain_control_revamped_scratch_command` | シェル | スクラッチポップアップで実行するもの |
+| `@pain_control_revamped_zoom_key` | なし | `zoom` を実行するキー |
+| `@pain_control_revamped_focus_size` | なし | 50 から 99 の整数。ペインの選択と分割のたびに、フォーカスしたペインをウィンドウの幅と高さのこの割合まで広げます。解除は tmux サーバーの再起動後に反映されます |
 
 次の節の各キーにも、`@pain_control_revamped_join_key` のような専用のオプションがあります。どのオプションも、`--join-key J` のようなダッシュ区切りのコマンドのオプションとしても、`PAIN_CONTROL_REVAMPED_JOIN_KEY` のような環境変数としても指定できます。コマンドラインが環境変数に優先し、環境変数が tmux オプションに優先します。空の tmux オプションは既定値を意味します。
 
@@ -116,9 +119,9 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `+` | ペインを左上に昇格させます | `_promote_key` |
 | `m`、`=` | ペインに印を付け、印のペインと入れ替えます | `_mark_key`、`_swap_mark_key` |
 
-次のキーは、オプションで指定するまで割り当てられません。`_sync_key` はペインの同期を切り替え、`_swap_window_left_key` と `_swap_window_right_key` はウィンドウを動かし、`_move_window_key` は別のセッションへ移し、`_kill_window_key` は閉じ、`_layout_even_h_key`、`_layout_even_v_key`、`_layout_main_v_key` はレイアウトを選び、`_respawn_key` はペインを再起動し、`_capture_key` はスクロールバックを保存し、`_pane_name_key` はペインに名前を付け、`_scratch_key` はスクラッチポップアップを開きます。
+次のキーは、オプションで指定するまで割り当てられません。`_sync_key` はペインの同期を切り替え、`_swap_window_left_key` と `_swap_window_right_key` はウィンドウを動かし、`_move_window_key` は別のセッションへ移し、`_kill_window_key` は閉じ、`_layout_even_h_key`、`_layout_even_v_key`、`_layout_main_v_key` はレイアウトを選び、`_respawn_key` はペインを再起動し、`_capture_key` はスクロールバックを保存し、`_pane_name_key` はペインに名前を付け、`_scratch_key` はスクラッチポップアップを開き、`_zoom_key` はパワーズームを実行します。
 
-古い tmux にない機能はバージョン確認で外れます。全幅の分割は 2.3、印は 2.1、ペイン名と端での停止は 2.6、`{top-left}` への昇格は 3.0、スクラッチポップアップは 3.2、説明は 3.1 が必要です。
+古い tmux にない機能はバージョン確認で外れます。全幅の分割は 2.3、印は 2.1、ペイン名と端での停止は 2.6、`{top-left}` への昇格は 3.0、スクラッチポップアップは 3.2、パワーズームは 3.0、フォーカスサイズは 3.1、説明は 3.1 が必要です。
 
 <a id="画面"></a>
 
@@ -171,6 +174,14 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 </tr>
 <tr>
 <td width="50%" valign="top"><img src="screens/accent.png" alt="pain-control-revamped: PAIN_CONTROL_REVAMPED_ACCENTによるアクセント"><br><sub><code>PAIN_CONTROL_REVAMPED_ACCENT</code>によるアクセント。<code>stills.tape</code>より</sub></td>
+<td width="50%" valign="top"><img src="screens/zoom.png" alt="pain-control-revamped: 専用のウィンドウに移したペインと、その隣に開いたペイン"><br><sub>専用のウィンドウに移したペインと、その隣に開いたペイン。<code>zoom.tape</code>より</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/zoom-placeholder.png" alt="pain-control-revamped: ペインの場所を保つプレースホルダー"><br><sub>ペインの場所を保つプレースホルダー。<code>zoom.tape</code>より</sub></td>
+<td width="50%" valign="top"><img src="screens/zoom-back.png" alt="pain-control-revamped: 元の場所に戻ったペイン"><br><sub>元の場所に戻ったペイン。<code>zoom.tape</code>より</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/focus.png" alt="pain-control-revamped: 70% に広がったフォーカス中のペイン"><br><sub>70% に広がったフォーカス中のペイン。<code>zoom.tape</code>より</sub></td>
 <td width="50%" valign="top"></td></tr>
 </table>
 

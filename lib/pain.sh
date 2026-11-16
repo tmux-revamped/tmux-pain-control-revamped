@@ -201,7 +201,7 @@ pain_control_revamped_plan_extras() {
 }
 
 pain_control_revamped_plan_vim() {
-  pain_control_revamped_plan_vim_test="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +${PAIN_CONTROL_REVAMPED_S_vim_pattern}\$'"
+  pain_control_revamped_plan_vim_test="[ -n '#{?@pane-is-vim,1,}' ] || ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +${PAIN_CONTROL_REVAMPED_S_vim_pattern}\$'"
   pain_control_revamped_emit bind-key -n C-h if-shell "${pain_control_revamped_plan_vim_test}" "send-keys C-h" "select-pane -L"
   pain_control_revamped_emit bind-key -n C-j if-shell "${pain_control_revamped_plan_vim_test}" "send-keys C-j" "select-pane -D"
   pain_control_revamped_emit bind-key -n C-k if-shell "${pain_control_revamped_plan_vim_test}" "send-keys C-k" "select-pane -U"
@@ -212,6 +212,75 @@ pain_control_revamped_plan_vim() {
   pain_control_revamped_emit bind-key -T copy-mode-vi C-k select-pane -U
   pain_control_revamped_emit bind-key -T copy-mode-vi C-l select-pane -R
   pain_control_revamped_emit bind-key -T copy-mode-vi "C-\\" select-pane -l
+}
+
+pain_control_revamped_plan_zoom() {
+  [ -n "${PAIN_CONTROL_REVAMPED_S_zoom_key}" ] || return 0
+  pain_control_revamped_at_least 3.0 || return 0
+  pain_control_revamped_plan_zoom_tool=$(printf '%s\n' "${REVAMPED_LIB%/lib}/bin/pain-control-revamped" | sed -e "s/'/'\\\\''/g" -e 's/#/##/g')
+  pain_control_revamped_plan_zoom_run="TMUX_PANE=#{pane_id} '${pain_control_revamped_plan_zoom_tool}' zoom"
+  pain_control_revamped_bind "" "${PAIN_CONTROL_REVAMPED_S_zoom_key}" "Power zoom" run-shell "${pain_control_revamped_plan_zoom_run}"
+}
+
+pain_control_revamped_plan_focus() {
+  pain_control_revamped_plan_focus_size="${PAIN_CONTROL_REVAMPED_S_focus_size}"
+  case "${pain_control_revamped_plan_focus_size}" in
+  "") return 0 ;;
+  [5-9][0-9]) : ;;
+  *)
+    printf 'pain-control-revamped: --focus-size must be a whole number from 50 to 99, got: %s\n' "${pain_control_revamped_plan_focus_size}" >&2
+    return 1
+    ;;
+  esac
+  pain_control_revamped_at_least 3.1 || return 0
+  pain_control_revamped_plan_focus_resize="resize-pane -x ${pain_control_revamped_plan_focus_size}% -y ${pain_control_revamped_plan_focus_size}%"
+  pain_control_revamped_plan_focus_hook="if-shell -F '#{?window_zoomed_flag,,1}' '${pain_control_revamped_plan_focus_resize}'"
+  pain_control_revamped_emit set-hook -g "after-select-pane[${PAIN_CONTROL_REVAMPED_HOOK_SLOT}]" "${pain_control_revamped_plan_focus_hook}"
+  pain_control_revamped_emit set-hook -g "after-split-window[${PAIN_CONTROL_REVAMPED_HOOK_SLOT}]" "${pain_control_revamped_plan_focus_hook}"
+}
+
+pain_control_revamped_zoom_panes() {
+  tmux list-panes -a -F '#{pane_id} #{window_id}' 2>/dev/null | awk -v pane="$1" -v hold="$2" '$1 == pane { have = have "p" } $1 == hold { have = have "h"; window = $2 } END { print have " " window }'
+}
+
+pain_control_revamped_zoom_out() {
+  pain_control_revamped_zoom_out_found=$(pain_control_revamped_zoom_panes "$1" "$2")
+  case "${pain_control_revamped_zoom_out_found}" in
+  ph* | hp*) tmux swap-pane -d -s "$1" -t "$2" \; kill-pane -t "$2" \; set-option -pu -t "$1" "${PAIN_CONTROL_REVAMPED_ZOOM_HOLD}" \; select-window -t "${pain_control_revamped_zoom_out_found#* }" \; select-pane -t "$1" ;;
+  h*) tmux kill-pane -t "$2" ;;
+  *) tmux set-option -pu -t "$1" "${PAIN_CONTROL_REVAMPED_ZOOM_HOLD}" \; display-message "pain-control-revamped: the place this pane came from is gone, so it stays here." ;;
+  esac
+}
+
+pain_control_revamped_zoom_in() {
+  pain_control_revamped_zoom_in_say="Pane $1 is zoomed in its own window. Press the zoom key here or there to put it back."
+  pain_control_revamped_zoom_in_hold="printf '%s\\n' '${pain_control_revamped_zoom_in_say}'; exec tail -f /dev/null"
+  pain_control_revamped_zoom_in_new=$(tmux new-window -d -a -t "$2" -P -F '#{window_id} #{pane_id}' -n "zoom $1" "${pain_control_revamped_zoom_in_hold}")
+  pain_control_revamped_zoom_in_window="${pain_control_revamped_zoom_in_new% *}"
+  pain_control_revamped_zoom_in_pane="${pain_control_revamped_zoom_in_new#* }"
+  tmux swap-pane -d -s "$1" -t "${pain_control_revamped_zoom_in_pane}" \; set-option -p -t "$1" "${PAIN_CONTROL_REVAMPED_ZOOM_HOLD}" "${pain_control_revamped_zoom_in_pane}" \; set-option -p -t "${pain_control_revamped_zoom_in_pane}" "${PAIN_CONTROL_REVAMPED_ZOOM_OF}" "$1" \; select-window -t "${pain_control_revamped_zoom_in_window}"
+}
+
+pain_control_revamped_zoom() {
+  set -- display-message -p
+  [ -z "${TMUX_PANE:-}" ] || set -- "$@" -t "${TMUX_PANE}"
+  pain_control_revamped_zoom_state=$(tmux "$@" "#{pane_id}:#{window_id}:#{window_panes}:#{${PAIN_CONTROL_REVAMPED_ZOOM_OF}}:#{${PAIN_CONTROL_REVAMPED_ZOOM_HOLD}}" 2>/dev/null) || pain_control_revamped_zoom_state=""
+  IFS=: read -r pain_control_revamped_zoom_pane pain_control_revamped_zoom_window pain_control_revamped_zoom_count pain_control_revamped_zoom_of pain_control_revamped_zoom_hold <<EOF
+${pain_control_revamped_zoom_state}
+EOF
+  if [ -z "${pain_control_revamped_zoom_pane}" ]; then
+    printf 'pain-control-revamped: no tmux pane to zoom.\n' >&2
+    return 1
+  fi
+  if [ -n "${pain_control_revamped_zoom_of}" ]; then
+    pain_control_revamped_zoom_out "${pain_control_revamped_zoom_of}" "${pain_control_revamped_zoom_pane}"
+  elif [ -n "${pain_control_revamped_zoom_hold}" ]; then
+    pain_control_revamped_zoom_out "${pain_control_revamped_zoom_pane}" "${pain_control_revamped_zoom_hold}"
+  elif [ "${pain_control_revamped_zoom_count}" -gt 1 ]; then
+    pain_control_revamped_zoom_in "${pain_control_revamped_zoom_pane}" "${pain_control_revamped_zoom_window}"
+  else
+    tmux display-message "pain-control-revamped: this pane is alone in its window, so it has nothing to zoom out of."
+  fi
 }
 
 pain_control_revamped_plan() {
@@ -230,6 +299,8 @@ pain_control_revamped_plan() {
   pain_control_revamped_plan_windows
   pain_control_revamped_plan_layouts
   pain_control_revamped_plan_extras
+  pain_control_revamped_plan_zoom
+  pain_control_revamped_plan_focus
 }
 
 pain_control_revamped_apply() {
