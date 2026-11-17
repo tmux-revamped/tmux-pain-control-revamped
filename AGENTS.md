@@ -14,7 +14,7 @@ Guidance for anyone, human or agent, changing tmux-pain-control-revamped. What i
 | [`lib/state.sh`](lib/state.sh) | Every global, including `PAIN_CONTROL_REVAMPED_SETTINGS`, the table of setting names and defaults the rest reads |
 | [`lib/core.sh`](lib/core.sh) | The version |
 | [`lib/`](lib) | Every other file is the shared library, identical in every member |
-| [`test/pain.bats`](test/pain.bats), [`test/commands.bats`](test/commands.bats), [`test/entrypoint.bats`](test/entrypoint.bats), [`test/zoom.bats`](test/zoom.bats), [`test/keys.bats`](test/keys.bats) | This member's suites: the library, the commands, the entry point and power zoom on a private tmux server, and every key pressed through a second tmux attached to it |
+| [`test/pain.bats`](test/pain.bats), [`test/commands.bats`](test/commands.bats), [`test/entrypoint.bats`](test/entrypoint.bats), [`test/zoom.bats`](test/zoom.bats), [`test/keys-panes.bats`](test/keys-panes.bats), [`test/keys-windows.bats`](test/keys-windows.bats), [`test/keys-vim.bats`](test/keys-vim.bats) | This member's suites: the library, the commands, the entry point and power zoom on a private tmux server, and every key pressed through a second tmux attached to it |
 | [`screens/`](screens) | The tapes and the recording's tmux config, whose new panes start the demo shell |
 
 ## Names
