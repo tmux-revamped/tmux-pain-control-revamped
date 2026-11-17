@@ -137,7 +137,7 @@ pain_control_revamped_plan_splits() {
   fi
   pain_control_revamped_bind "" "${PAIN_CONTROL_REVAMPED_S_smart_split_key}" "Smart split" \
     if-shell "[ #{pane_width} -gt #{pane_height} ]" \
-    "split-window -h -c ${pain_control_revamped_plan_splits_path}" "split-window -v -c ${pain_control_revamped_plan_splits_path}"
+    "split-window -h -c \"${pain_control_revamped_plan_splits_path}\"" "split-window -v -c \"${pain_control_revamped_plan_splits_path}\""
   case "${PAIN_CONTROL_REVAMPED_S_new_window_path}" in
   true | on | 1) pain_control_revamped_bind "" c "New window here" new-window -c "${pain_control_revamped_plan_splits_path}" ;;
   *) : ;;
@@ -201,7 +201,7 @@ pain_control_revamped_plan_extras() {
 }
 
 pain_control_revamped_plan_vim() {
-  pain_control_revamped_plan_vim_test="[ -n '#{?@pane-is-vim,1,}' ] || ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +${PAIN_CONTROL_REVAMPED_S_vim_pattern}\$'"
+  pain_control_revamped_plan_vim_test="[ -n '#{?@pane-is-vim,1,}' ] || ps -o state= -o comm= -t '#{pane_tty}' 2>/dev/null | grep -iqE '^[^TXZ ]+ +${PAIN_CONTROL_REVAMPED_S_vim_pattern}\$' || printf '%s\\n' #{q:pane_current_command} | grep -iqE '^${PAIN_CONTROL_REVAMPED_S_vim_pattern}\$'"
   pain_control_revamped_emit bind-key -n C-h if-shell "${pain_control_revamped_plan_vim_test}" "send-keys C-h" "select-pane -L"
   pain_control_revamped_emit bind-key -n C-j if-shell "${pain_control_revamped_plan_vim_test}" "send-keys C-j" "select-pane -D"
   pain_control_revamped_emit bind-key -n C-k if-shell "${pain_control_revamped_plan_vim_test}" "send-keys C-k" "select-pane -U"

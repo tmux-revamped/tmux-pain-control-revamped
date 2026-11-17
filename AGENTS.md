@@ -14,7 +14,7 @@ Guidance for anyone, human or agent, changing tmux-pain-control-revamped. What i
 | [`lib/state.sh`](lib/state.sh) | Every global, including `PAIN_CONTROL_REVAMPED_SETTINGS`, the table of setting names and defaults the rest reads |
 | [`lib/core.sh`](lib/core.sh) | The version |
 | [`lib/`](lib) | Every other file is the shared library, identical in every member |
-| [`test/pain.bats`](test/pain.bats), [`test/commands.bats`](test/commands.bats), [`test/entrypoint.bats`](test/entrypoint.bats), [`test/zoom.bats`](test/zoom.bats) | This member's suites: the library, the commands, and the entry point and power zoom on a private tmux server |
+| [`test/pain.bats`](test/pain.bats), [`test/commands.bats`](test/commands.bats), [`test/entrypoint.bats`](test/entrypoint.bats), [`test/zoom.bats`](test/zoom.bats), [`test/keys.bats`](test/keys.bats) | This member's suites: the library, the commands, the entry point and power zoom on a private tmux server, and every key pressed through a second tmux attached to it |
 | [`screens/`](screens) | The tapes and the recording's tmux config, whose new panes start the demo shell |
 
 ## Names
@@ -34,7 +34,7 @@ Guidance for anyone, human or agent, changing tmux-pain-control-revamped. What i
 
 - Every binding carries a `-N` note on tmux 3.1 and later, so `prefix + ?` lists it.
 - Version checks drop what an older tmux lacks: full splits need 2.3, marks 2.1, pane names and no-wrap 2.6, the `{top-left}` promote target and power zoom 3.0, the focus size 3.1, and the scratch popup 3.2.
-- With vim navigation on, each chord sends the key to vim when the pane's `@pane-is-vim` option is set, as smart-splits.nvim sets it, and otherwise runs `ps` on the pane's TTY and matches the process name against the vim pattern.
+- With vim navigation on, each chord sends the key to vim when the pane's `@pane-is-vim` option is set, as smart-splits.nvim sets it, and otherwise runs `ps` on the pane's TTY and matches the process name against the vim pattern. Where `ps` cannot list a TTY, as BusyBox's cannot, the pane's foreground command is matched instead.
 - Power zoom swaps the pane with a placeholder in a new window right after its own, so the pane keeps its exact geometry both ways. The pane option `@pain_control_revamped_zoom_hold` names the placeholder, and `@pain_control_revamped_zoom_of` on the placeholder names the pane; a side whose partner is gone is cleared on the next zoom.
 - The focus size installs one `after-select-pane` and one `after-split-window` hook at array index 37, which a zoomed window skips. Unsetting it leaves the hooks until the server restarts, as with pane titles.
 
@@ -45,6 +45,4 @@ Guidance for anyone, human or agent, changing tmux-pain-control-revamped. What i
 
 ## Gaps against FAMILY.md
 
-As of 2026-11-16:
-
-- No test presses its keys through a real client; the suites check the bound commands and call them directly, so what tmux does to a binding's own command goes untested.
+As of 2026-11-17, none.

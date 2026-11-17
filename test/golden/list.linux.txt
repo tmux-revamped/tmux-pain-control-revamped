@@ -17,7 +17,7 @@ bind-key -N Split down " split-window -v -c #{pane_current_path}
 bind-key -N Split right % split-window -h -c #{pane_current_path}
 bind-key -N Split full width \ split-window -fh -c #{pane_current_path}
 bind-key -N Split full height _ split-window -fv -c #{pane_current_path}
-bind-key -N Smart split * if-shell [ #{pane_width} -gt #{pane_height} ] split-window -h -c #{pane_current_path} split-window -v -c #{pane_current_path}
+bind-key -N Smart split * if-shell [ #{pane_width} -gt #{pane_height} ] split-window -h -c "#{pane_current_path}" split-window -v -c "#{pane_current_path}"
 bind-key -N New window here c new-window -c #{pane_current_path}
 bind-key -N Join pane @ command-prompt -p join pane from: join-pane -h -s '%%'
 bind-key -N Break pane to window ! break-pane

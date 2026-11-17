@@ -158,7 +158,7 @@ refuse() {
   plan_at 3.6
 
   # Assert
-  [[ "${output}" == *"bind-key -n C-h if-shell [ -n '#{?@pane-is-vim,1,}' ] || ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+/)?g?\\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?\$' send-keys C-h select-pane -L"* ]]
+  [[ "${output}" == *"bind-key -n C-h if-shell [ -n '#{?@pane-is-vim,1,}' ] || ps -o state= -o comm= -t '#{pane_tty}' 2>/dev/null | grep -iqE '^[^TXZ ]+ +(\\S+/)?g?\\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?\$' || printf '%s\\n' #{q:pane_current_command} | grep -iqE '^(\\S+/)?g?\\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?\$' send-keys C-h select-pane -L"* ]]
   [[ "${output}" == *"bind-key -n C-\\ if-shell"*"send-keys C-\\\\ select-pane -l"* ]]
   [[ "${output}" == *"bind-key -T copy-mode-vi C-l select-pane -R"* ]]
   [[ "${output}" == *"bind-key -N Clear screen C-l send-keys C-l"* ]]
