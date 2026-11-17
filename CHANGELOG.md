@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.1...v3.1.2) (2026-11-17)
+
+
+### Bug Fixes
+
+* make smart split and BusyBox vim checks work ([bf4dd3c](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/bf4dd3cc9c2b1aac6658def7ed2124d159540968))
+
 ## [3.1.1](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.0...v3.1.1) (2026-11-16)
 
 
