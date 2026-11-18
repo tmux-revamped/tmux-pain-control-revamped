@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.3](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.2...v3.1.3) (2026-11-18)
+
+
+### Bug Fixes
+
+* stop counting some characters twice ([798540d](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/798540de29df9375897772d2477b80f2b6838497))
+
 ## [3.1.2](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.1...v3.1.2) (2026-11-17)
 
 
