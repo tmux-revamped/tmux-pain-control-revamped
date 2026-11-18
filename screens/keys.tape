@@ -52,7 +52,7 @@ Screenshot break.png
 Sleep 1s
 Hide
 Ctrl+]
-Type@5ms "prefix @"
+Type@5ms "prefix @, Escape"
 Enter
 Show
 Ctrl+B
@@ -60,11 +60,6 @@ Type@1ms "@"
 Sleep 1s
 Screenshot join.png
 Sleep 1s
-Hide
-Ctrl+]
-Type@5ms "Escape"
-Enter
-Show
 Escape
 Sleep 500ms
 Hide

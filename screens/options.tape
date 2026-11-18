@@ -131,7 +131,7 @@ Screenshot vim-nowrap.png
 Sleep 1s
 Hide
 Ctrl+]
-Type@5ms "prefix T"
+Type@5ms "prefix T, exit, Enter"
 Enter
 Show
 Ctrl+B
@@ -139,11 +139,6 @@ Type@1ms "T"
 Sleep 3s
 Screenshot scratch-popup.png
 Sleep 1s
-Hide
-Ctrl+]
-Type@5ms "exit Enter"
-Enter
-Show
 Type "exit"
 Enter
 Sleep 1s
