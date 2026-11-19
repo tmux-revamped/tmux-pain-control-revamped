@@ -74,3 +74,8 @@ PAIN_CONTROL_REVAMPED_NOTES=0
 PAIN_CONTROL_REVAMPED_NOWRAP=0
 PAIN_CONTROL_REVAMPED_PATH='#{pane_current_path}'
 REVAMPED_LOG_NS=pain-control-revamped
+PAIN_CONTROL_REVAMPED_KINDS='resize	number
+new_window_path	true on 1 false off 0
+no_wrap	on off
+vim_navigation	on off
+pane_titles	on off'

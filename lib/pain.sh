@@ -31,10 +31,14 @@ pain_control_revamped_resolve() {
   '
 }
 
+pain_control_revamped_setting_rows() {
+  pain_control_revamped_setting_rows_format=$(pain_control_revamped_format)
+  pain_control_revamped_setting_rows_live=$(tmux display-message -p "${pain_control_revamped_setting_rows_format}" 2>/dev/null) || pain_control_revamped_setting_rows_live=""
+  pain_control_revamped_resolve "${pain_control_revamped_setting_rows_live}"
+}
+
 pain_control_revamped_load() {
-  pain_control_revamped_load_format=$(pain_control_revamped_format)
-  pain_control_revamped_load_live=$(tmux display-message -p "${pain_control_revamped_load_format}" 2>/dev/null) || pain_control_revamped_load_live=""
-  pain_control_revamped_load_values=$(pain_control_revamped_resolve "${pain_control_revamped_load_live}")
+  pain_control_revamped_load_values=$(pain_control_revamped_setting_rows)
   while IFS='	' read -r pain_control_revamped_load_name pain_control_revamped_load_value; do
     IFS= read -r "PAIN_CONTROL_REVAMPED_S_${pain_control_revamped_load_name}" <<EOF
 ${pain_control_revamped_load_value}

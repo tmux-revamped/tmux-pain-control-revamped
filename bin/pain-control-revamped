@@ -133,9 +133,16 @@ pain_control_revamped_doctor_ps() {
   revamped_doctor_line ps warn "vim navigation needs it"
 }
 
+pain_control_revamped_doctor_settings() {
+  pain_control_revamped_doctor_settings_rows=$(pain_control_revamped_setting_rows)
+  # shellcheck disable=SC2154
+  revamped_doctor_settings "${PAIN_CONTROL_REVAMPED_KINDS}" "${pain_control_revamped_doctor_settings_rows}"
+}
+
 pain_control_revamped_doctor() {
   revamped_doctor_tmux
   pain_control_revamped_doctor_ps
+  pain_control_revamped_doctor_settings
   revamped_doctor_gum
   revamped_doctor_core_tools awk sed tr grep
   revamped_doctor_finish

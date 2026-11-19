@@ -95,7 +95,7 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pain_control_revamped_zoom_key` | なし | `zoom` を実行するキー |
 | `@pain_control_revamped_focus_size` | なし | 50 から 99 の整数。ペインの選択と分割のたびに、フォーカスしたペインをウィンドウの幅と高さのこの割合まで広げます。解除は tmux サーバーの再起動後に反映されます |
 
-次の節の各キーにも、`@pain_control_revamped_join_key` のような専用のオプションがあります。どのオプションも、`--join-key J` のようなダッシュ区切りのコマンドのオプションとしても、`PAIN_CONTROL_REVAMPED_JOIN_KEY` のような環境変数としても指定できます。コマンドラインが環境変数に優先し、環境変数が tmux オプションに優先します。空の tmux オプションは既定値を意味します。
+次の節の各キーにも、`@pain_control_revamped_join_key` のような専用のオプションがあります。どのオプションも、`--join-key J` のようなダッシュ区切りのコマンドのオプションとしても、`PAIN_CONTROL_REVAMPED_JOIN_KEY` のような環境変数としても指定できます。コマンドラインが環境変数に優先し、環境変数が tmux オプションに優先します。空の tmux オプションは既定値を意味します。`doctor` は、プラグインが認識できない値を持つ設定の名前を表示します。
 
 3.0.0 より前のオプション名 `@pane_control_*`、`@pane_resize`、`@new_window_path` は使えなくなりました。
 

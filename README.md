@@ -95,7 +95,7 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pain_control_revamped_zoom_key` | none | The key that runs `zoom` |
 | `@pain_control_revamped_focus_size` | none | A whole number from 50 to 99: the percent of the window's width and height the focused pane grows to after each pane selection and split. Unsetting it takes effect when the tmux server restarts |
 
-Each key in the next section has its own option too, such as `@pain_control_revamped_join_key`. Every option is also a command option with dashes, such as `--join-key J`, and an environment variable, such as `PAIN_CONTROL_REVAMPED_JOIN_KEY`; the command line wins over the environment, and the environment over the tmux option. An empty tmux option means its default.
+Each key in the next section has its own option too, such as `@pain_control_revamped_join_key`. Every option is also a command option with dashes, such as `--join-key J`, and an environment variable, such as `PAIN_CONTROL_REVAMPED_JOIN_KEY`; the command line wins over the environment, and the environment over the tmux option. An empty tmux option means its default. `doctor` names any setting that holds a value the plugin does not know.
 
 The options were named `@pane_control_*`, `@pane_resize` and `@new_window_path` before 3.0.0, and those names no longer work.
 

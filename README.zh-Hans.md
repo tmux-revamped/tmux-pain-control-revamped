@@ -95,7 +95,7 @@ run-shell ~/.tmux/plugins/tmux-pain-control-revamped/pain-control-revamped.tmux
 | `@pain_control_revamped_zoom_key` | 无 | 运行 `zoom` 的按键 |
 | `@pain_control_revamped_focus_size` | 无 | 50 到 99 的整数：每次选择或分割窗格后，获得焦点的窗格扩大到窗口宽度和高度的这个百分比。取消设置要等 tmux 服务器重启后才生效 |
 
-下一节的每个按键也都有自己的选项，例如 `@pain_control_revamped_join_key`。每个选项也都是用连字符命名的命令选项，例如 `--join-key J`，以及一个环境变量，例如 `PAIN_CONTROL_REVAMPED_JOIN_KEY`；命令行优先于环境变量，环境变量优先于 tmux 选项。空的 tmux 选项表示默认值。
+下一节的每个按键也都有自己的选项，例如 `@pain_control_revamped_join_key`。每个选项也都是用连字符命名的命令选项，例如 `--join-key J`，以及一个环境变量，例如 `PAIN_CONTROL_REVAMPED_JOIN_KEY`；命令行优先于环境变量，环境变量优先于 tmux 选项。空的 tmux 选项表示默认值。`doctor` 会指出值无法识别的设置。
 
 3.0.0 之前的选项名 `@pane_control_*`、`@pane_resize` 和 `@new_window_path` 不再生效。
 
