@@ -1,5 +1,19 @@
 # Changelog
 
+# [3.2.0](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.3...v3.2.0) (2026-11-19)
+
+
+### Bug Fixes
+
+* fold a table wider than the terminal ([2cb7520](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/2cb7520fe66fcd6778ba21ae85a1045556da3402))
+* read the grep of macOS as bsd in doctor ([7061191](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/70611915befeaa4cede19d29ef99941569a0ef04))
+* stop a recording that hangs ([419427d](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/419427d05aceb4572ac40de272848f6a8033d1aa))
+
+
+### Features
+
+* name unknown setting values in doctor ([e0565ce](https://github.com/tmux-revamped/tmux-pain-control-revamped/commit/e0565ced46443ec8468aca6d1610007f5905cbcc))
+
 ## [3.1.3](https://github.com/tmux-revamped/tmux-pain-control-revamped/compare/v3.1.2...v3.1.3) (2026-11-18)
 
 
